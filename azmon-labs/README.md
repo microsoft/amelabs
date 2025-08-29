@@ -2,6 +2,28 @@
 
 A comprehensive Azure monitoring lab environment built with Terraform and automated with Bash scripts. This lab deploys a complete monitoring infrastructure including virtual machines, Virtual Machine Scale Sets (VMSS), Log Analytics workspace, Sentinel, Data Collection Rules (DCRs), and Azure Monitor Agent (AMA).
 
+## 🚀 Quick Start (Recommended)
+
+**The easiest way to deploy this lab is using Azure Portal Bash:**
+
+1. Open [Azure Portal](https://portal.azure.com)
+2. Click on the **Cloud Shell** icon (terminal icon in the top menu)
+3. Select **Bash** when prompted
+4. Run this single command:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-labs/init-lab.sh)
+```
+
+That's it! ✨ The script will automatically:
+- Deploy all Azure resources using Terraform
+- Configure monitoring agents and data collection rules
+- Set up auto-shutdown policies
+- Install simulators and forwarders
+- Configure everything for you
+
+The entire deployment takes about 25-30 minutes. You'll be prompted for a few configuration options during the setup.
+
 ## 🏗️ Architecture
 
 This lab creates the following Azure resources:
@@ -18,8 +40,11 @@ This lab creates the following Azure resources:
 
 <img width="1171" height="1177" alt="image" src="https://github.com/user-attachments/assets/4617964d-031f-4e24-a952-2a0c838c6272" />
 
+---
 
-## 🚀 Quick Start
+## � Manual Deployment (Optional)
+
+*The following sections are for advanced users who want to manually deploy or customize the lab. For most users, the Quick Start method above is recommended.*
 
 ### Prerequisites
 
