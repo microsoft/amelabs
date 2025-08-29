@@ -16,6 +16,9 @@ This lab creates the following Azure resources:
 - **Azure Monitor Agent (AMA)** deployed on all VMs
 - **Auto-shutdown policies** for cost optimization
 
+<img width="1171" height="1177" alt="image" src="https://github.com/user-attachments/assets/4617964d-031f-4e24-a952-2a0c838c6272" />
+
+
 ## 🚀 Quick Start
 
 ### Prerequisites
