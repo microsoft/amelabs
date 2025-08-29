@@ -1,0 +1,40 @@
+# Example terraform.tfvars file for production environment
+# Copy this file to terraform.tfvars and customize as needed
+
+# Basic Configuration
+prefix              = "azmon"
+resource_group_name = "rg-azmon-ampls-lab"
+location           = "North Europe"
+
+# VM Configuration
+admin_username    = "azureuser"
+vm_size          = "Standard_B2s"  # Supports Gen2 VMs (2 vCPUs, 4GB RAM)
+enable_public_ips = true  # Set to false for production, use Azure Bastion instead
+
+# Network Configuration (adjust if needed)
+hub_vnet_address_space                      = ["10.0.0.0/16"]
+windows_spoke_vnet_address_space            = ["10.1.0.0/16"]
+ubuntu_spoke_vnet_address_space             = ["10.2.0.0/16"]
+hub_ampls_subnet_address_prefixes           = ["10.0.1.0/24"]
+windows_spoke_vm_subnet_address_prefixes    = ["10.1.1.0/24"]
+ubuntu_spoke_vm_subnet_address_prefixes     = ["10.2.1.0/24"]
+
+# Log Analytics Configuration
+log_analytics_sku             = "PerGB2018"
+log_analytics_retention_days  = 30
+perf_counter_sampling_frequency = 60
+
+# Auto-shutdown Configuration
+enable_autoshutdown                = true
+autoshutdown_time                 = "1900"  # 7:00 PM
+autoshutdown_timezone             = "UTC"
+autoshutdown_notification_enabled = false
+autoshutdown_notification_email   = ""  # Set your email if enabling notifications
+
+# Tags
+tags = {
+  Environment = "Lab"
+  Project     = "Azure Monitor AMPLS"
+  Purpose     = "Testing"
+  Owner       = "Your Name"
+}

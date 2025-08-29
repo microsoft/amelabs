@@ -1,0 +1,11 @@
+output "plan_id"                 { value = azurerm_service_plan.plan.id }
+output "plan_name"               { value = azurerm_service_plan.plan.name }
+output "dotnet_webapp_id"        { value = azurerm_linux_web_app.dotnet.id }
+output "java_webapp_id"          { value = azurerm_linux_web_app.java.id }
+output "node_webapp_id"          { value = azurerm_linux_web_app.node.id }
+output "dotnet_webapp_name"      { value = azurerm_linux_web_app.dotnet.name }
+output "java_webapp_name"        { value = azurerm_linux_web_app.java.name }
+output "node_webapp_name"        { value = azurerm_linux_web_app.node.name }
+output "dotnet_default_hostname" { value = azurerm_linux_web_app.dotnet.default_hostname }
+output "java_default_hostname"   { value = azurerm_linux_web_app.java.default_hostname }
+output "node_default_hostname"   { value = azurerm_linux_web_app.node.default_hostname }
