@@ -1,4 +1,4 @@
-# Azure Monitor AMPLS Lab Environment
+# Azure Monitor AMPLS + AppInsights Lab Environment
 
 This comprehensive lab demonstrates Azure Monitor Private Link Scope (AMPLS) implementation with a hub-and-spoke network topology, featuring:
 
@@ -18,7 +18,7 @@ This comprehensive lab demonstrates Azure Monitor Private Link Scope (AMPLS) imp
 4. Run this single command:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-ampls/init-lab.sh)
+bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-lab-ampls-appinsights/init-lab.sh)
 ```
 
 That's it! ✨ The script will automatically:
