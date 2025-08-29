@@ -16,7 +16,7 @@ bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/ma
 ```
 
 That's it! ✨ The script will automatically:
-- Deploy all Azure resources using Terraform
+- Deploy all Azure resources using Terraform and Az Cli
 - Configure monitoring agents and data collection rules
 - Set up auto-shutdown policies
 - Install simulators and forwarders
@@ -68,16 +68,9 @@ Edit the Terraform variables in `terraform/environments/default/terraform.tfvars
 resource_group_name = "rg-azmon-lab"
 location = "East US"
 workspace_name = "law-azmon-lab"
-function_app_prefix = "vmss-shutdown-fn"      # Will be made globally unique automatically
-storage_account_prefix = "funcstorvmss"       # Will be made globally unique automatically
-app_service_plan_prefix = "vmss-fn-plan"      # Will be made globally unique automatically
+automation_account_name = "aa-vmss-autoshutdown"  # Azure Automation Account name
 # ... other variables
 ```
-
-**Note**: All Azure Function-related resource prefixes will automatically have a random 8-character suffix added to ensure global uniqueness across all Azure subscriptions. For example:
-- `vmss-shutdown-fn` becomes `vmss-shutdown-fn-abc12345`
-- `funcstorvmss` becomes `funcstorvmssabc12345`
-- `vmss-fn-plan` becomes `vmss-fn-plan-abc12345`
 
 ### 3. Deploy the Lab
 
@@ -98,7 +91,7 @@ This script will:
 7. Install AMA Forwarder on Red Hat VM
 8. Install CEF Simulator on Ubuntu VM
 9. Configure auto-shutdown for all VMs and VMSS
-10. Deploy VMSS auto-shutdown Azure Function
+10. Deploy VMSS auto-shutdown Azure Automation Runbook
 
 **Note**: All scripts now use parameter-based invocation instead of reading from JSON files, making them more robust and automation-friendly.
 
@@ -130,7 +123,7 @@ The AKS and managed solutions deployment script accepts the following parameters
 The post-deployment script accepts the following parameters:
 
 ```bash
-./post-deployment-tasks.sh <RESOURCE_GROUP> <REDHAT_VM_NAME> <UBUNTU_VM_NAME> <WINDOWS_VM_NAME> <VMSS_NAME> <REDHAT_PRIVATE_IP> <UTC_TIME> <FUNCTION_APP_NAME>
+./post-deployment-tasks.sh <RESOURCE_GROUP> <REDHAT_VM_NAME> <UBUNTU_VM_NAME> <WINDOWS_VM_NAME> <VMSS_NAME> <REDHAT_PRIVATE_IP> <UTC_TIME> <AUTOMATION_ACCOUNT_NAME>
 ```
 
 **Parameters:**
@@ -141,31 +134,11 @@ The post-deployment script accepts the following parameters:
 - `VMSS_NAME`: Name of the Windows virtual machine scale set
 - `REDHAT_PRIVATE_IP`: Private IP address of the Red Hat VM
 - `UTC_TIME`: UTC time for auto-shutdown in HHMM format (calculated from user's local 7:00 PM)
-- `FUNCTION_APP_NAME`: Name of the Azure Function App for VMSS shutdown
+- `AUTOMATION_ACCOUNT_NAME`: Name of the Azure Automation Account for VMSS shutdown
 
 **Example:**
 ```bash
-./post-deployment-tasks.sh "rg-azmon-lab" "vm-redhat-001" "vm-ubuntu-001" "vm-windows-001" "vmss-windows-001" "10.0.1.100" "0000" "func-vmss-shutdown"
-```
-
-### deploy-vmss-autoshutdown.sh
-
-The VMSS auto-shutdown Azure Function deployment script accepts the following parameters:
-
-```bash
-./deploy-vmss-autoshutdown.sh <UTC_SCHEDULE_HOUR> <FUNCTION_APP_NAME> <RESOURCE_GROUP> <VMSS_RESOURCE_GROUP> <VMSS_NAME>
-```
-
-**Parameters:**
-- `UTC_SCHEDULE_HOUR`: UTC hour for shutdown schedule (0-23, calculated from user's local 7:00 PM)
-- `FUNCTION_APP_NAME`: Name of the Azure Function App
-- `RESOURCE_GROUP`: Resource group for the Function App
-- `VMSS_RESOURCE_GROUP`: Resource group containing the VMSS
-- `VMSS_NAME`: Name of the Virtual Machine Scale Set
-
-**Example:**
-```bash
-./deploy-vmss-autoshutdown.sh "23" "func-vmss-shutdown" "rg-azmon-lab" "rg-azmon-lab" "vmss-windows-001"
+./post-deployment-tasks.sh "rg-azmon-lab" "vm-redhat-001" "vm-ubuntu-001" "vm-windows-001" "vmss-windows-001" "10.0.1.100" "0000" "aa-vmss-autoshutdown"
 ```
 
 The UTC_TIME parameter represents 7:00 PM in the user's local timezone converted to UTC time. This approach eliminates dependency on JSON file parsing and makes the scripts more portable and testable.
@@ -180,19 +153,19 @@ The lab automatically configures auto-shutdown for all VMs and VMSS to help mana
 - **Notification**: 15 minutes before shutdown
 - **Time Calculation**: Scripts automatically calculate the corresponding UTC time based on your local timezone
 - **Resources**: All VMs and VMSS are configured with auto-shutdown policies
-- **VMSS Function**: Azure Function deployed for VMSS shutdown automation (timer-triggered Python function)
+- **VMSS Automation**: Azure Automation Runbook deployed for VMSS shutdown automation (scheduled PowerShell runbook)
 
 The deployment script automatically:
 1. Detects your local timezone
 2. Calculates what 7:00 PM in your local time corresponds to in UTC
 3. Configures auto-shutdown for VMs using Azure CLI
-4. Deploys a timer-triggered Azure Function for VMSS shutdown (since VMSS doesn't support native auto-shutdown)
+4. Deploys a scheduled Azure Automation Runbook for VMSS shutdown (since VMSS doesn't support native auto-shutdown)
 
 **Example:**
 - If you're in EST (UTC-5) and want 7:00 PM shutdown
 - Script calculates: 7:00 PM EST = 12:00 AM UTC (next day)
 - Auto-shutdown configured for 0000 UTC
-- Azure Function scheduled with timer trigger for the same time
+- Azure Automation Runbook scheduled for the same time
 
 This approach works around Azure CLI limitations with timezone parameters and ensures accurate scheduling regardless of your location.
 
@@ -233,25 +206,16 @@ Installs a CEF message generator that:
 - Supports multiple vendor formats (PaloAlto, CyberArk, Fortinet)
 - Runs every 30 seconds via cron
 
-#### VMSS Auto-Shutdown Function
+#### VMSS Auto-Shutdown Automation
 
-Deploys a timer-triggered Azure Function for VMSS auto-shutdown:
-- **Language**: Python (v2 programming model with decorators)
-- **Trigger**: Timer-based (configurable schedule)
-- **Authentication**: System-assigned managed identity
+Deploys an Azure Automation Account with a scheduled runbook for VMSS auto-shutdown:
+- **Platform**: Azure Automation Account with PowerShell runbook
+- **Trigger**: Schedule-based (configurable timing)
+- **Authentication**: Managed Identity with appropriate RBAC permissions
 - **Functionality**: Automatically deallocates VMSS instances at scheduled time
-- **Robust Deployment**: Includes retry logic and function readiness checks
+- **Robust Deployment**: Includes retry logic and proper error handling
 - **Timezone Support**: Schedule dynamically calculated based on user's local timezone
-- **Unique Storage**: Automatically generates globally unique storage account names with random suffixes
-
-#### Automatic Resource Naming
-
-The lab automatically handles globally unique resource naming for Azure Function components:
-- **Function App**: Uses configurable prefix + random 8-character suffix (e.g., `vmss-shutdown-fn-abc12345`)
-- **Storage Account**: Uses configurable prefix + random 8-character suffix (e.g., `funcstorvmssabc12345`)
-- **App Service Plan**: Uses configurable prefix + random 8-character suffix (e.g., `vmss-fn-plan-abc12345`)
-- **Validation**: Ensures prefixes meet Azure naming requirements for each resource type
-- **No Conflicts**: Eliminates deployment failures due to name collisions across Azure tenants
+- **Cost Effective**: No consumption charges, runs on Azure's automation infrastructure
 
 ## 📁 Project Structure
 
@@ -307,12 +271,12 @@ az vmss list --resource-group rg-azmon-lab --output table
 # Check auto-shutdown configuration for VMs
 az vm show --resource-group rg-azmon-lab --name <vm-name> --query "scheduledEventsProfile"
 
-# Check auto-shutdown for VMSS (via Azure Function)
-az functionapp list --resource-group rg-azmon-lab --output table
-az functionapp function list --name <function-app-name> --resource-group rg-azmon-lab
+# Check auto-shutdown for VMSS (via Azure Automation)
+az automation account list --resource-group rg-azmon-lab --output table
+az automation runbook list --automation-account-name <automation-account-name> --resource-group rg-azmon-lab
 
-# Check Function App configuration
-az functionapp config appsettings list --name <function-app-name> --resource-group rg-azmon-lab
+# Check Automation Account schedules
+az automation schedule list --automation-account-name <automation-account-name> --resource-group rg-azmon-lab
 ```
 
 ### 3. Monitor Logs
@@ -335,33 +299,25 @@ The auto-shutdown time is calculated automatically from your local timezone. To 
 Alternatively, you can directly modify the UTC hour parameter when calling the scripts manually:
 
 ```bash
-# For 9:00 PM shutdown (21:00 local time), calculate UTC hour and use:
-./deploy-vmss-autoshutdown.sh "02" "func-vmss-shutdown" "rg-azmon-lab" "rg-azmon-lab" "vmss-windows-001"
+# For 9:00 PM shutdown (21:00 local time), modify the automation_account_name parameter:
+# The schedule is automatically configured based on your local timezone during deployment
 ```
 
-### Customize VMSS Function Schedule
+### Customize VMSS Automation Schedule
 
-Edit the `SCHEDULE_EXPRESSION` in the Python function code before deployment:
+The Azure Automation Runbook schedule is automatically configured during deployment based on your local timezone. To modify the schedule manually, you can update the automation account schedule in the Azure portal or via Azure CLI after deployment.
 
-```python
-@app.timer_trigger(schedule="0 0 23 * * *", arg_name="myTimer", run_on_startup=False)
-```
+### Customize Automation Account Naming
 
-### Customize Storage Account Naming
-
-Modify the Azure Function resource prefixes in your `terraform.tfvars`:
+Modify the Azure Automation Account name in your `terraform.tfvars`:
 
 ```hcl
-function_app_prefix = "mycompany-vmss-fn"     # Will become mycompany-vmss-fn-abc12345
-storage_account_prefix = "mycompanyfunc"      # Will become mycompanyfuncabc12345
-app_service_plan_prefix = "mycompany-plan"    # Will become mycompany-plan-abc12345
+automation_account_name = "mycompany-aa-autoshutdown"  # Azure Automation Account name
 ```
 
 **Requirements:**
-- **Function App Prefix**: Maximum 50 characters, letters, numbers, and hyphens only
-- **Storage Account Prefix**: Maximum 16 characters, lowercase letters and numbers only
-- **App Service Plan Prefix**: Maximum 50 characters, letters, numbers, and hyphens only
-- All prefixes must be unique enough to avoid conflicts with your naming conventions
+- **Automation Account Name**: Maximum 50 characters, letters, numbers, and hyphens only
+- Must be unique within your Azure region and resource group
 
 ### Add Custom Data Collection Rules
 
@@ -392,10 +348,10 @@ terraform destroy -var-file="environments/default/terraform.tfvars"
 2. **DCR association failures**: Verify AMA is properly installed and identity configured
 3. **Network connectivity**: Check NSG rules and public IP assignments
 4. **Log forwarding issues**: Verify rsyslog configuration and network connectivity
-5. **VMSS Function deployment failures**: Check Azure Function App service plan and managed identity permissions
-6. **Function execution issues**: Verify the Function App has Contributor role on the VMSS resource group
-7. **Storage account naming conflicts**: The lab automatically handles this with random suffixes, but ensure your prefix is ≤16 characters and lowercase alphanumeric only
-8. **Function app naming conflicts**: The lab automatically handles this with random suffixes, but ensure your prefix is ≤50 characters and uses only letters, numbers, and hyphens
+5. **VMSS Automation deployment failures**: Check Azure Automation Account creation and managed identity permissions
+6. **Runbook execution issues**: Verify the Automation Account has Contributor role on the VMSS resource group
+7. **Schedule not triggering**: Check the automation schedule configuration and timezone settings
+8. **Automation account naming conflicts**: Ensure your automation account name is unique in the region
 
 ### Debug Commands
 
@@ -409,18 +365,23 @@ az account show
 # Check VM extensions
 az vm extension list --resource-group rg-azmon-lab --vm-name <vm-name>
 
-# Check Azure Function status
-az functionapp list --resource-group rg-azmon-lab --output table
-az functionapp function list --name <function-app-name> --resource-group rg-azmon-lab
+# Check Azure Automation Account status
+az automation account list --resource-group rg-azmon-lab --output table
 
-# Check Function App logs
-az webapp log tail --name <function-app-name> --resource-group rg-azmon-lab
+# Check automation runbooks
+az automation runbook list --automation-account-name <automation-account-name> --resource-group rg-azmon-lab
+
+# Check automation schedules
+az automation schedule list --automation-account-name <automation-account-name> --resource-group rg-azmon-lab
+
+# View automation job status
+az automation job list --automation-account-name <automation-account-name> --resource-group rg-azmon-lab
 
 # View systemd logs (on VMs)
 sudo journalctl -u rsyslog -f
 
-# Test VMSS shutdown function manually
-az functionapp function invoke --name <function-app-name> --resource-group rg-azmon-lab --function-name VMSSShutdownFunction
+# Test VMSS shutdown runbook manually
+az automation runbook start --automation-account-name <automation-account-name> --resource-group rg-azmon-lab --name <runbook-name>
 ```
 
 ## 📄 License
