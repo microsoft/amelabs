@@ -8,10 +8,38 @@ This comprehensive lab demonstrates Azure Monitor Private Link Scope (AMPLS) imp
 - **Virtual Machine Monitoring**: Windows and Ubuntu VMs with Azure Monitor Agent
 - **Interactive Setup**: User-friendly deployment script with guided configuration
 
+## 🚀 Quick Start (Recommended)
+
+**The easiest way to deploy this lab is using Azure Portal Bash:**
+
+1. Open [Azure Portal](https://portal.azure.com)
+2. Click on the **Cloud Shell** icon (terminal icon in the top menu)
+3. Select **Bash** when prompted
+4. Run this single command:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-ampls/init-lab.sh)
+```
+
+That's it! ✨ The script will automatically:
+- Deploy all Azure resources using Terraform
+- Configure hub-and-spoke network topology with AMPLS
+- Set up private endpoints and DNS zones
+- Deploy multi-platform applications (Java, .NET, Node.js)
+- Configure monitoring agents and data collection
+- Configure everything for you
+
+The entire deployment takes about 25-30 minutes. You'll be prompted for a few configuration options during the setup.
+
 ## Architecture Overview
 
 <img width="1341" height="1638" alt="image" src="https://github.com/user-attachments/assets/3121767c-1dd6-4d6e-9df3-1e359d0f20e4" />
 
+---
+
+## 📋 Manual Deployment (Optional)
+
+*The following sections are for advanced users who want to manually deploy or customize the lab. For most users, the Quick Start method above is recommended.*
 
 ## Prerequisites
 
@@ -19,13 +47,11 @@ This comprehensive lab demonstrates Azure Monitor Private Link Scope (AMPLS) imp
 - Terraform 1.0+ installed
 - Appropriate Azure permissions to create resources
 
-## Quick Start
-
-### Interactive Deployment (Recommended)
+### Interactive Deployment
 
 1. **Clone the repository and navigate to project root**:
    ```bash
-   git clone https://github.com/tiagojfernandes/azmon-ampls.git
+   git clone https://github.com/microsoft/amelabs.git
    cd azmon-ampls
    ```
 
