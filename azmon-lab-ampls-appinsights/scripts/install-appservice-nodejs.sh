@@ -37,16 +37,14 @@ echo -e "${CYAN}App Service Plan: ${APP_SERVICE_PLAN}${NC}"
 # Deploy Node.js Application
 echo -e "${CYAN}Deploying Node.js sample application...${NC}"
 
-# Check if the repository already exists
-if [ ! -d "node-ai-demo" ]; then
-    git clone https://github.com/tiagojfernandes/node-ai-demo.git
-fi
+# Generate a new Express application
+npx express-generator node-ai-demo --view ejs
 
 cd node-ai-demo
 
 # Install dependencies locally first to ensure they're available
 echo -e "${CYAN}Installing Node.js dependencies...${NC}"
-npm install
+npm install -y
 
 # Fix security vulnerabilities  
 npm audit fix --force
