@@ -28,23 +28,28 @@ bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/ma
 ## 📚 Lab Descriptions
 
 ### 🔧 [Azure Monitor Agents & Essentials](./azmon-lab-agents-essentials/)
-**What you'll learn:**
+
 - Azure Monitor Agent (AMA) deployment and configuration
 - Data Collection Rules (DCRs) for targeted log collection
 - Virtual Machine Scale Sets (VMSS) monitoring
+- Azure Kubernetes Service (AKS) with monitoring enabled
+- Azure Managed Grafana for visualization and dashboards
+- Azure Monitor Workspace (Managed Prometheus) for metrics collection
 - Azure Automation Runbooks for cost optimization
-- Syslog and CEF data forwarding
+- Syslog and CEF data forwarding for Sentinel integration
 - Multi-platform monitoring (Windows, Ubuntu, Red Hat)
 
 **Architecture:**
 - Windows/Ubuntu/Red Hat Virtual Machines
 - Windows Virtual Machine Scale Set
+- Azure Kubernetes Service (AKS) cluster
+- Azure Managed Grafana and Monitor Workspace
 - Log Analytics Workspace & Sentinel integration
 - Azure Automation Account for auto-shutdown
 - Network Security Groups with proper access controls
 
 ### 🔐 [AMPLS & Application Insights](./azmon-lab-ampls-appinsights/)
-**What you'll learn:**
+
 - Azure Monitor Private Link Scope (AMPLS) implementation
 - Hub-and-spoke network architecture
 - Private endpoints for monitoring services
@@ -90,20 +95,6 @@ Coverage of Windows, Linux, and various application platforms.
 3. **Run the one-liner command** for your chosen lab
 4. **Follow the interactive prompts** for configuration
 5. **Explore the deployed resources** and monitoring capabilities
-
-## 🔍 What Gets Deployed?
-
-### Common Components Across Labs:
-- **Resource Groups** with organized resource naming
-- **Log Analytics Workspace** for centralized logging
-- **Virtual Machines** with monitoring agents
-- **Network Security Groups** with least-privilege access
-- **Auto-shutdown policies** for cost management
-- **Data Collection Rules** for targeted monitoring
-
-### Lab-Specific Components:
-- **Agents & Essentials**: VMSS, Azure Automation, Sentinel, CEF/Syslog forwarding
-- **AMPLS & App Insights**: Private endpoints, App Services, Application Insights, hub-spoke networking
 
 ## 🤝 Contributing
 
