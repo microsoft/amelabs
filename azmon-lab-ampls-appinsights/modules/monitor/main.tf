@@ -506,7 +506,7 @@ resource "azurerm_monitor_data_collection_rule" "ubuntu" {
     azurerm_log_analytics_workspace.main,
     azurerm_monitor_data_collection_endpoint.main,
     azurerm_monitor_private_link_scoped_service.dce,
-    azurerm_monitor_private_link_scoped_service.workspace
+    azurerm_monitor_private_link_scoped_service.law
   ]
 
   tags = var.tags
