@@ -478,6 +478,7 @@ resource "azurerm_monitor_data_collection_rule" "ubuntu" {
   name                        = "${var.prefix}-dcr-ubuntu"
   resource_group_name         = var.resource_group_name
   location                    = var.location
+  kind                        = "Linux"
   data_collection_endpoint_id = azurerm_monitor_data_collection_endpoint.main.id
 
   destinations {
@@ -494,17 +495,18 @@ resource "azurerm_monitor_data_collection_rule" "ubuntu" {
 
   data_sources {
     syslog {
-      streams          = ["Microsoft-Syslog"]
-      facility_names   = ["auth", "daemon", "syslog", "user"]
-      log_levels       = ["Critical", "Error", "Warning", "Info"]
-      name             = "syslogDataSource"
+      streams        = ["Microsoft-Syslog"]
+      facility_names = ["user", "mail", "daemon", "auth", "syslog", "lpr", "news", "uucp", "ftp", "ntp", "audit", "alert", "mark", "local0", "local1", "local2", "local3", "local4", "local5", "local6", "local7"]
+      log_levels     = ["Debug", "Info", "Notice", "Warning", "Error", "Critical", "Alert", "Emergency"]
+      name           = "syslogDataSource"
     }
   }
 
   depends_on = [
     azurerm_log_analytics_workspace.main,
     azurerm_monitor_data_collection_endpoint.main,
-    azurerm_monitor_private_link_scoped_service.dce
+    azurerm_monitor_private_link_scoped_service.dce,
+    azurerm_monitor_private_link_scoped_service.workspace
   ]
 
   tags = var.tags
