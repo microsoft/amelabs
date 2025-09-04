@@ -17,8 +17,15 @@ echo -e "${BLUE}========================================${NC}"
 echo -e "${GREEN}🚀 Starting Azure Monitoring Lab Deployment...${NC}"
 echo -e "${BLUE}========================================${NC}"
 
+# Get the script directory and project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+echo -e "${CYAN}Script directory: $SCRIPT_DIR${NC}"
+echo -e "${CYAN}Project root: $PROJECT_ROOT${NC}"
+
 # Change to the project directory
-cd ~/amelabs/azmon-lab-agents-essentials
+cd "$PROJECT_ROOT"
 
 
 # Initialize and apply Terraform
@@ -42,14 +49,12 @@ terraform output -json > tf_outputs.json
 echo -e "${GREEN}✅ Terraform deployment completed!${NC}"
 
 # Load variables from the Terraform output JSON
-cd ~
-PWD=$(pwd)
-TF_OUTPUTS="$PWD/amelabs/azmon-lab-agents-essentials/terraform/tf_outputs.json"
-
+TF_OUTPUTS="$PROJECT_ROOT/terraform/tf_outputs.json"
 
 # Checks if the Terraform outputs file exists and loads the necessary variables.
 echo ""
 echo -e "${CYAN}🔍 Loading Terraform outputs...${NC}"
+echo -e "${CYAN}Looking for: $TF_OUTPUTS${NC}"
 if [ ! -f "$TF_OUTPUTS" ]; then
   echo -e "${RED}ERROR: Terraform outputs file not found: $TF_OUTPUTS${NC}"
   exit 1
@@ -81,7 +86,7 @@ echo -e "${CYAN}  - Automation Account: ${YELLOW}$AUTOMATION_ACCOUNT_NAME${NC}"
 # This section will create aks, prometheus, grafana, and other resources as needed
 echo ""
 echo -e "${CYAN}🔄 Running AKS and Azure Monitor workspace configuration...${NC}"
-cd ~/amelabs/azmon-lab-agents-essentials/scripts
+cd "$PROJECT_ROOT/scripts"
 chmod +x deploy-aks-managedsolutions.sh
 ./deploy-aks-managedsolutions.sh "$RESOURCE_GROUP" "$WORKSPACE_ID" "$WORKSPACE_NAME" "$AKS_CLUSTER" "$MANAGED_GRAFANA" "$PROM_NAME"
 

@@ -44,10 +44,10 @@ cd node-ai-demo
 
 # Install dependencies locally first to ensure they're available
 echo -e "${CYAN}Installing Node.js dependencies...${NC}"
-npm install -y
+npm install
 
 # Fix security vulnerabilities  
-npm audit fix --force
+npm audit fix --force --yes
 
 # Create a deployment package with node_modules included
 echo -e "${CYAN}Creating deployment package...${NC}"
@@ -68,7 +68,7 @@ sleep 30
 # Verify the deployment worked
 echo -e "${CYAN}Checking Node.js app deployment status...${NC}"
 for i in {1..12}; do
-    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://${NODE_WEBAPP_NAME}.azurewebsites.net/healthz" || echo "000")
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://${NODE_WEBAPP_NAME}.azurewebsites.net" || echo "000")
     if [ "$HTTP_CODE" == "200" ]; then
         echo -e "${GREEN}Node.js app is responding successfully!${NC}"
         break
