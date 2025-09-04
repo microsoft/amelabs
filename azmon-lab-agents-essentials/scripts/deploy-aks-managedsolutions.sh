@@ -39,6 +39,16 @@ AKS_CLUSTER="$4"
 MANAGED_GRAFANA="$5"
 PROM_NAME="$6"
 
+# Generate unique names to avoid global naming conflicts
+# Managed Grafana names must be globally unique
+RANDOM_SUFFIX=$(date +%s | tail -c 6)  # Use last 5 digits of timestamp
+UNIQUE_GRAFANA_NAME="${MANAGED_GRAFANA}-${RANDOM_SUFFIX}"
+
+echo -e "${CYAN}Generated unique Grafana name: ${YELLOW}$UNIQUE_GRAFANA_NAME${NC}"
+
+# Use the unique name for Grafana operations
+MANAGED_GRAFANA="$UNIQUE_GRAFANA_NAME"
+
 echo -e "${BLUE}========================================${NC}"
 echo -e "${CYAN}Starting AKS and Managed Solutions Deployment${NC}"
 echo -e "${BLUE}========================================${NC}"
