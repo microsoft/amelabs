@@ -18,7 +18,8 @@ echo -e "${GREEN}🚀 Starting Azure Monitoring Lab Deployment...${NC}"
 echo -e "${BLUE}========================================${NC}"
 
 # Change to the project directory
-cd ~/azmon-labs
+cd ~/amelabs/azmon-lab-agents-essentials
+
 
 # Initialize and apply Terraform
 echo ""
