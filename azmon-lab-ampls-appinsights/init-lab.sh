@@ -15,7 +15,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Clone the repo (skip if already cloned)
-if [ ! -d "azmon-ampls" ]; then
+if [ ! -d "amelabs" ]; then
   echo -e "${CYAN}Cloning amelabs repository...${NC}"
   git clone https://github.com/microsoft/amelabs.git
 fi
@@ -151,7 +151,7 @@ while true; do
 done
 
 # Navigate to the project directory
-cd azmon-ampls/environments/prod
+cd amelabs/azmon-lab-ampls-appinsights/environments/prod
 
 # Allow user to specify a custom prefix to avoid naming conflicts
 TIMESTAMP=$(date +%m%d-%H%M)

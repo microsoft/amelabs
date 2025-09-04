@@ -43,7 +43,7 @@ echo -e "${GREEN}✅ Terraform deployment completed!${NC}"
 # Load variables from the Terraform output JSON
 cd ~
 PWD=$(pwd)
-TF_OUTPUTS="$PWD/azmon-labs/terraform/tf_outputs.json"
+TF_OUTPUTS="$PWD/amelabs/azmon-lab-agents-essentials/terraform/tf_outputs.json"
 
 
 # Checks if the Terraform outputs file exists and loads the necessary variables.
@@ -80,14 +80,14 @@ echo -e "${CYAN}  - Automation Account: ${YELLOW}$AUTOMATION_ACCOUNT_NAME${NC}"
 # This section will create aks, prometheus, grafana, and other resources as needed
 echo ""
 echo -e "${CYAN}🔄 Running AKS and Azure Monitor workspace configuration...${NC}"
-cd ~/azmon-labs/scripts
+cd ~/amelabs/azmon-lab-agents-essentials/scripts
 chmod +x deploy-aks-managedsolutions.sh
 ./deploy-aks-managedsolutions.sh "$RESOURCE_GROUP" "$WORKSPACE_ID" "$WORKSPACE_NAME" "$AKS_CLUSTER" "$MANAGED_GRAFANA" "$PROM_NAME"
 
 # Run post-deployment tasks
 echo ""
 echo -e "${CYAN}🔄 Running post-deployment configuration...${NC}"
-cd ~/azmon-labs/scripts
+cd ~/amelabs/azmon-lab-agents-essentials/scripts
 chmod +x post-deployment-tasks.sh
 ./post-deployment-tasks.sh "$RESOURCE_GROUP" "$REDHAT_VM_NAME" "$UBUNTU_VM_NAME" "$WINDOWS_VM_NAME" "$VMSS_NAME" "$REDHAT_PRIVATE_IP" "$USER_TIMEZONE"
 

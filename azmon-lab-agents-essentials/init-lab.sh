@@ -23,9 +23,9 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Clone the repo (skip if already cloned)
-if [ ! -d "azmon-labs" ]; then
-  echo -e "${CYAN}Cloning azmon-labs repository...${NC}"
-  git clone https://github.com/tiagojfernandes/azmon-labs.git
+if [ ! -d "amelabs" ]; then
+  echo -e "${CYAN}Cloning amelabs repository...${NC}"
+  git clone https://github.com/microsoft/amelabs.git
 fi
 
 
@@ -185,7 +185,7 @@ fi
 
 # Write user input to tfvars file
 echo -e "${CYAN}Creating configuration file...${NC}"
-ENV_DIR="azmon-labs/terraform/environments/default"
+ENV_DIR="amelabs/azmon-lab-agents-essentials/terraform/environments/default"
 mkdir -p "$ENV_DIR"
 
 cat > "$ENV_DIR/terraform.tfvars" <<EOF
@@ -259,6 +259,6 @@ echo -e "${BLUE}========================================${NC}"
 echo -e "${GREEN}🚀 Starting Deployment Process...${NC}"
 echo -e "${BLUE}========================================${NC}"
 
-cd ~/azmon-labs/scripts
+cd ~/amelabs/azmon-lab-agents-essentials/scripts
 chmod +x deploy-monitoring-viaCLI.sh
 bash deploy-monitoring-viaCLI.sh
