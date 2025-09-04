@@ -409,7 +409,10 @@ resource "azurerm_monitor_data_collection_rule" "cef_dcr" {
     Project     = "Azure Monitoring"
   }
 
-  depends_on = [azurerm_sentinel_log_analytics_workspace_onboarding.main]
+  depends_on = [
+    azurerm_sentinel_log_analytics_workspace_onboarding.main,
+    module.log_analytics
+  ]
 }
 
 # Associate CEF DCR with Red Hat VM
@@ -453,7 +456,10 @@ resource "azurerm_monitor_data_collection_rule" "syslog_dcr" {
     Project     = "Azure Monitoring"
   }
 
-  depends_on = [azurerm_sentinel_log_analytics_workspace_onboarding.main]
+  depends_on = [
+    azurerm_sentinel_log_analytics_workspace_onboarding.main,
+    module.log_analytics
+  ]
 }
 
 # Associate Syslog DCR with Ubuntu VM
