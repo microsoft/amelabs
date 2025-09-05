@@ -11,7 +11,3 @@ variable "subnet_name" {
   default = "vmss_subnet"
   description = "Name of the subnet"
 }
-
-variable "my_ip" {
-  type = string
-}

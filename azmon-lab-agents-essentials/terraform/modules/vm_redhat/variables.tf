@@ -60,9 +60,9 @@ variable "os_disk_size_gb" {
 
 # Image Configuration
 variable "redhat_sku" {
-  description = "Red Hat SKU to deploy (8-gen2, 8_4-gen2, 7-RAW, etc.)"
+  description = "Red Hat SKU to deploy (9_4-gen2, 8_10-gen2, 8-gen2, etc.)"
   type        = string
-  default     = "8-gen2"
+  default     = "9_4-gen2"
 }
 
 variable "redhat_version" {

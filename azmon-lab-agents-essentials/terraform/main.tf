@@ -27,21 +27,11 @@ module "log_analytics" {
   workspace_name      = var.workspace_name
 }
 
-data "http" "my_public_ip" {
-  url = "https://api.ipify.org?format=json"
-}
-
-locals {
-  my_ip = jsondecode(data.http.my_public_ip.response_body).ip
-}
-
-
 module "network" {
   source              = "./modules/network"
   resource_group_name = module.resource_group.name
   location            = var.location
   subnet_name         = "vmss_subnet"
-  my_ip               = local.my_ip
 }
 
 
@@ -411,7 +401,8 @@ resource "azurerm_monitor_data_collection_rule" "cef_dcr" {
 
   depends_on = [
     azurerm_sentinel_log_analytics_workspace_onboarding.main,
-    module.log_analytics
+    module.log_analytics,
+    module.vm_redhat
   ]
 }
 
@@ -458,7 +449,8 @@ resource "azurerm_monitor_data_collection_rule" "syslog_dcr" {
 
   depends_on = [
     azurerm_sentinel_log_analytics_workspace_onboarding.main,
-    module.log_analytics
+    module.log_analytics,
+    module.vm_ubuntu
   ]
 }
 
