@@ -38,7 +38,7 @@ echo -e "${CYAN}App Service Plan: ${APP_SERVICE_PLAN}${NC}"
 echo -e "${CYAN}Deploying Node.js sample application...${NC}"
 
 # Generate a new Express application
-npx express-generator node-ai-demo --view ejs
+npx -y express-generator node-ai-demo --view ejs
 
 cd node-ai-demo
 

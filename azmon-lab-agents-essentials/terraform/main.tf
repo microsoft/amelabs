@@ -461,11 +461,17 @@ resource "azurerm_monitor_data_collection_rule_association" "syslog_dcr_ubuntu_a
   target_resource_id      = module.vm_ubuntu.vm_id
 }
 
+# Generate unique automation account name to avoid global naming conflicts
+locals {
+  unique_automation_suffix = substr(md5("${module.resource_group.name}-${var.location}"), 0, 6)
+  unique_automation_name   = "${var.automation_account_name}-${local.unique_automation_suffix}"
+}
+
 module "automation_runbook" {
   source                  = "./modules/automation_runbook"
   resource_group_name     = module.resource_group.name
   location                = var.location
-  automation_account_name = var.automation_account_name
+  automation_account_name = local.unique_automation_name
   vmss_name               = var.vmss_name
   user_timezone_hour      = length(var.user_timezone) == 4 ? "${substr(var.user_timezone, 0, 2)}:${substr(var.user_timezone, 2, 2)}" : "19:00"
   subscription_id         = var.subscription_id
