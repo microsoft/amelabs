@@ -11,7 +11,7 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
+CYAN='\e[96m'
 NC='\033[0m' # No Color
 
 # Clone the repo (skip if already cloned)
@@ -64,6 +64,11 @@ register_provider() {
     echo -e "${GREEN}Provider ${YELLOW}$ns${GREEN} already registered.${NC}"
   fi
 }
+
+
+# Set default values
+RESOURCE_GROUP="rg-azmon-lab"
+WORKSPACE_NAME="azmon-workspace"
 
 
 # Register necessary Azure providers

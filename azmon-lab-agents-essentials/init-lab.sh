@@ -15,7 +15,7 @@
 set -e
 
 # Color codes for better user experience
-CYAN='\033[0;36m'
+CYAN='\e[96m'
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
