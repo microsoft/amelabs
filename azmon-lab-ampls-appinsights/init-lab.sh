@@ -78,7 +78,47 @@ echo ""
 
 # Prompt for deployment parameters
 prompt_input "Enter the name for the Azure Resource Group" RESOURCE_GROUP
-prompt_input "Enter the Azure location (e.g., uksouth)" LOCATION
+
+# Azure region selection with numbered menu
+DEFAULT_REGION="uksouth"
+ALLOWED_REGIONS=(
+  "australiaeast"
+  "brazilsouth"
+  "canadacentral"
+  "centralindia"
+  "centralus"
+  "eastasia"
+  "francecentral"
+  "norwayeast"
+  "northeurope"
+  "southeastasia"
+  "swedencentral"
+  "uaenorth"
+  "uksouth"
+  "westus3"
+)
+
+echo ""
+echo -e "${CYAN}Please select an Azure region from the list below:${NC}"
+echo ""
+i=1
+for region in "${ALLOWED_REGIONS[@]}"; do
+  printf "  %2d) %s\n" "$i" "$region"
+  ((i++))
+done
+echo ""
+
+read -r -p "$(echo -e "${CYAN}Enter the number of your chosen region: ${NC}")" user_input
+
+# Validate region selection
+if [[ "$user_input" =~ ^[0-9]+$ ]] && (( user_input >= 1 && user_input <= ${#ALLOWED_REGIONS[@]} )); then
+  LOCATION="${ALLOWED_REGIONS[$((user_input-1))]}"
+  echo -e "${GREEN}✅ Selected Azure region: $LOCATION${NC}"
+else
+  echo -e "${YELLOW}⚠️ Invalid selection. Falling back to default region: $DEFAULT_REGION${NC}"
+  LOCATION="$DEFAULT_REGION"
+fi
+
 prompt_input "Enter the name for the Log Analytics Workspace" WORKSPACE_NAME
 # Prompt for timezone for auto-shutdown configuration
 echo ""
