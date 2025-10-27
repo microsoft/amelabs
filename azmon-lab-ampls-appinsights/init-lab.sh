@@ -24,27 +24,22 @@ fi
 # Functions
 # -------------------------------
 
-# Function to prompt for user input with validation
+# Prompt user input with validation
 prompt_input() {
-  local prompt_text="$1"
-  local var_name="$2"
-  local default_value="$3"
+  local prompt_msg=$1
+  local var_name=$2
+  local current_value="${!var_name}"
   
-  while true; do
-    if [ -n "$default_value" ]; then
-      read -p "$(echo -e "${CYAN}$prompt_text [$default_value]: ${NC}")" user_input
-      user_input=${user_input:-$default_value}
-    else
-      read -p "$(echo -e "${CYAN}$prompt_text: ${NC}")" user_input
+  if [ -n "$current_value" ]; then
+    read -rp "$(echo -e "${CYAN}$prompt_msg ${YELLOW}[$current_value]${CYAN}: ${NC}")" input
+    if [ -n "$input" ]; then
+      eval $var_name="$input"
     fi
-    
-    if [ -n "$user_input" ]; then
-      eval "$var_name='$user_input'"
-      break
-    else
-      echo -e "${RED}This field cannot be empty. Please try again.${NC}"
-    fi
-  done
+  else
+    while [ -z "${!var_name}" ]; do
+      read -rp "$(echo -e "${CYAN}$prompt_msg: ${NC}")" $var_name
+    done
+  fi
 }
 
 # Register Azure resource provider if not yet registered
@@ -80,6 +75,10 @@ done
 
 echo -e "${CYAN}Please provide the following configuration values:${NC}"
 echo ""
+
+# Set default values
+RESOURCE_GROUP="rg-ampls-lab"
+WORKSPACE_NAME="law-ampls-lab"
 
 # Prompt for deployment parameters
 prompt_input "Enter the name for the Azure Resource Group" RESOURCE_GROUP
