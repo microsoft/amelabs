@@ -89,8 +89,21 @@ All applications use:
 ## 📋 Manual Deployment (Optional)
 
 ### Prerequisites
-- Azure CLI installed and configured
-- Terraform 1.0+ installed
+
+#### Core Infrastructure Tools
+- **Azure CLI** (latest version) - for Azure resource management
+- **Terraform** (1.0+) - for infrastructure provisioning
+- **Git** - for repository cloning and version control
+- **Bash Shell** - for running deployment scripts (WSL on Windows, native on Linux/macOS)
+
+#### Development Runtimes & SDKs
+- **Java Development Kit (JDK) 17+** - for building Java Spring Boot applications
+- **Maven** (3.6+) or Maven Wrapper - for Java project build management
+- **.NET SDK** (8.0+) - for building .NET Core applications
+- **Node.js** (20+ LTS) - for Node.js application development
+- **npm** (comes with Node.js) - for Node.js package management
+
+#### Azure Permissions
 - Appropriate Azure permissions to create resources
 
 ### Deploy
@@ -102,6 +115,17 @@ cd azmon-lab-ampls-appinsights
 
 ## 🧹 Cleanup
 
+### Azure Cloud Shell Deployment
+If you deployed using the Quick Start method (recommended):
+1. Go to the [Azure Portal](https://portal.azure.com)
+2. Navigate to **Resource Groups**
+3. Find your lab resource group
+4. Click **Delete resource group**
+5. Type the resource group name to confirm
+6. Click **Delete**
+
+### Manual Deployment
+If you deployed manually using Terraform, you can use the Terraform utility to clean up all resources:
 ```bash
 cd environments/prod
 terraform destroy

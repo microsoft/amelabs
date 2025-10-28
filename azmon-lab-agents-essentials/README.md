@@ -4,57 +4,112 @@ A comprehensive Azure monitoring lab environment built with Terraform and automa
 
 ## 🚀 Quick Start (Recommended)
 
-**The easiest way to deploy this lab is using Azure Portal Bash:**
+**The easiest way to deploy this lab is using Azure Portal Bash - no local setup required!**
+
+### One-Liner Deployment
 
 1. Open [Azure Portal](https://portal.azure.com)
 2. Click on the **Cloud Shell** icon (terminal icon in the top menu)
-3. Select **Bash** when prompted
+3. Select **Bash** when prompted (first-time users)
 4. Run this single command:
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-lab-agents-essentials/init-lab.sh)
 ```
 
-The deployment takes about 25-30 minutes. You'll be prompted for configuration options during setup.
+### What You Get
+
+This lab creates a comprehensive Azure monitoring environment:
+
+- **Infrastructure Monitoring**: VMSS, VMs (Ubuntu, Windows, Red Hat), and AKS cluster
+- **Centralized Logging**: Log Analytics workspace with Sentinel integration  
+- **Advanced Monitoring**: Azure Monitor Agent (AMA) with Data Collection Rules (DCRs)
+- **Visualization**: Azure Managed Grafana with Prometheus metrics
+- **Security Monitoring**: CEF log simulation and Syslog collection
+- **Cost Management**: Automated shutdown policies for all compute resources
+
+### Deployment Details
+
+- **Duration**: 25-30 minutes for complete setup
+- **Interaction**: You'll be prompted for resource names and Azure region selection
+- **Authentication**: Uses your current Azure Portal session (no separate login required)
+- **Cost Optimization**: All VMs configured with 7:00 PM local time auto-shutdown
 
 ## 🏗️ Architecture
 
-This lab creates the following Azure resources:
+This lab focuses on **infrastructure and platform monitoring** with enterprise-grade logging and security monitoring capabilities:
 
-- **Resource Group** with Log Analytics Workspace
+### Core Infrastructure
+- **Resource Group** with centralized Log Analytics workspace
 - **Windows Virtual Machine Scale Set (VMSS)** for scalable monitoring scenarios
-- **Ubuntu VM** with Syslog Data Collection Rule (DCR)
-- **Windows VM** for Windows-specific monitoring
-- **Red Hat VM** with CEF Data Collection Rule for Sentinel integration
-- **Azure Kubernetes Service (AKS)** cluster with monitoring enabled
-- **Azure Managed Grafana** for visualization and dashboards
-- **Azure Monitor Workspace (Managed Prometheus)** for metrics collection
-- **Azure Automation Account** with PowerShell runbooks for cost optimization
-- **Network Security Groups** with appropriate security rules
-- **Data Collection Rules (DCRs)** for targeted log collection
-- **Azure Monitor Agent (AMA)** deployed on all VMs
-- **Auto-shutdown policies** for cost optimization
+- **Multi-Platform VMs**: Ubuntu (Syslog), Windows (Events), Red Hat (CEF/Sentinel)
+- **Azure Kubernetes Service (AKS)** cluster with container monitoring
+
+### Monitoring & Observability Stack
+- **Azure Monitor Agent (AMA)** - Next-generation monitoring agent on all VMs
+- **Data Collection Rules (DCRs)** - Targeted log collection with fine-grained control
+- **Azure Managed Grafana** - Enterprise visualization and alerting platform
+- **Azure Monitor Workspace (Managed Prometheus)** - Cloud-native metrics collection
+- **Microsoft Sentinel** - SIEM integration via CEF logs
+
+### Automation & Cost Management
+- **Azure Automation Account** - PowerShell runbooks for VMSS lifecycle management
+- **Auto-shutdown Policies** - 7:00 PM local time shutdown for all compute resources
+- **Network Security Groups** - Least-privilege access with IP restrictions
 
 <img width="1171" height="1177" alt="image" src="https://github.com/user-attachments/assets/4617964d-031f-4e24-a952-2a0c838c6272" />
+
+### 🎯 Lab Focus & Use Cases
+
+This lab is designed for **infrastructure monitoring and security operations** scenarios:
+
+- **Azure Monitor Agent (AMA) Adoption** - Experience next-gen monitoring with DCRs
+- **Multi-Platform Monitoring** - Windows, Linux, and container workloads  
+- **SIEM Integration** - Sentinel integration via CEF logs and security monitoring
+- **Scalable Monitoring** - VMSS scenarios for enterprise-scale environments
+- **Container Monitoring** - AKS with Prometheus and Grafana integration
+- **Cost Optimization** - Automated shutdown and resource lifecycle management
+
+**Complementary to AMPLS Lab**: While the AMPLS lab focuses on application monitoring with private network connectivity, this lab emphasizes platform monitoring, security operations, and agent-based data collection.
 
 ---
 
 ## 📋 Manual Deployment (Optional)
 
+**Advanced users who prefer local development can deploy manually:**
+
 ### Prerequisites
-- Azure CLI installed and authenticated
-- Terraform >= 1.3.0
-- Bash shell
+
+#### Core Infrastructure Tools
+- **Azure CLI** (latest version) - for Azure resource management
+- **Terraform** >= 1.3.0 - for infrastructure as code deployment  
+- **Git** - for repository cloning
+- **Bash Shell** - for script execution (Linux/macOS/WSL)
+
+#### ⚠️ Note on Software Requirements
+Manual deployment requires setting up these tools locally, while **Azure Portal Bash (recommended above) has everything pre-installed** and ready to use.
 
 ### Deploy
 ```bash
-git clone <repository-url>
-cd azmon-lab-agents-essentials
+git clone https://github.com/microsoft/amelabs.git
+cd amelabs/azmon-lab-agents-essentials
 chmod +x scripts/deploy-monitoring-viaCLI.sh
 ./scripts/deploy-monitoring-viaCLI.sh
 ```
 
-## � Cleanup
+## 🧹 Cleanup
+
+### Azure Portal Bash Deployment
+Resources deployed via the one-liner command can be cleaned up directly in the Azure Portal:
+
+1. Navigate to **Resource Groups** in the Azure Portal
+2. Find your lab resource group (e.g., `rg-azmon-lab`)
+3. Click **Delete resource group**
+4. Type the resource group name to confirm
+5. Click **Delete**
+
+### Manual Deployment  
+For manual deployments using the Terraform utility:
 
 ```bash
 cd terraform
