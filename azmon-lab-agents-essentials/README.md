@@ -70,8 +70,6 @@ This lab is designed for **infrastructure monitoring and security operations** s
 - **Container Monitoring** - AKS with Prometheus and Grafana integration
 - **Cost Optimization** - Automated shutdown and resource lifecycle management
 
-**Complementary to AMPLS Lab**: While the AMPLS lab focuses on application monitoring with private network connectivity, this lab emphasizes platform monitoring, security operations, and agent-based data collection.
-
 ---
 
 ## 📋 Manual Deployment (Optional)

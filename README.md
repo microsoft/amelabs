@@ -4,7 +4,7 @@ Welcome to the Azure Monitoring Labs repository! This collection provides hands-
 
 ## 🎯 Repository Overview
 
-This repository contains multiple independent lab environments, each focusing on different aspects of Azure monitoring and observability. The labs are optimized for **Azure Cloud Shell** execution to avoid local dependencies and are limited to specific Azure regions to ensure SKU availability and capacity constraints are met.
+This repository contains independent lab environments, each focusing on different aspects of Azure monitoring and observability. The labs are optimized for **Azure Cloud Shell** execution to avoid local dependencies and are limited to specific Azure regions to ensure SKU availability and capacity constraints are met.
 
 | Lab | Focus Area | Deployment Time | Difficulty |
 |-----|------------|----------------|------------|
