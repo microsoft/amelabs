@@ -77,7 +77,7 @@ variable "java_app_command_line" {
 # Node.js configuration
 variable "node_version" {
   type    = string
-  default = "20-lts"
+  default = "22-lts"
 }
 
 variable "node_app_command_line" {
