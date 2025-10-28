@@ -108,6 +108,10 @@ Resources deployed via the one-liner command can be cleaned up directly in the A
 4. Type the resource group name to confirm
 5. Click **Delete**
 
+> **📝 Note**: Deleting the main lab resource group will automatically remove the two additional resource groups created during deployment:
+> - **AKS Node Resource Group** (e.g., `MC_rg-azmon-lab_aks-azmon_eastus`) - Contains AKS cluster nodes and networking
+> - **Azure Monitor Workspace Resource Group** - Contains managed Prometheus resources
+
 ### Manual Deployment  
 For manual deployments using the Terraform utility:
 

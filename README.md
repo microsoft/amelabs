@@ -4,7 +4,7 @@ Welcome to the Azure Monitoring Labs repository! This collection provides hands-
 
 ## 🎯 Repository Overview
 
-This repository contains multiple independent lab environments, each focusing on different aspects of Azure monitoring and observability. The labs are optimized for Azure Cloud Shell execution to avoid local dependencies and are limited to specific Azure regions to ensure SKU availability and capacity constraints are met.
+This repository contains multiple independent lab environments, each focusing on different aspects of Azure monitoring and observability. The labs are optimized for **Azure Cloud Shell** execution to avoid local dependencies and are limited to specific Azure regions to ensure SKU availability and capacity constraints are met.
 
 | Lab | Focus Area | Deployment Time | Difficulty |
 |-----|------------|----------------|------------|
@@ -15,12 +15,12 @@ This repository contains multiple independent lab environments, each focusing on
 
 **For the fastest deployment experience, use Azure Portal Cloud Shell:**
 
-### Option 1: Azure Monitor Agents & Essentials Lab
+### Lab 1: Azure Monitor Agents & Essentials Lab
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-lab-agents-essentials/init-lab.sh)
 ```
 
-### Option 2: AMPLS & Application Insights Lab  
+### Lab 2: AMPLS & Application Insights Lab  
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-lab-ampls-appinsights/init-lab.sh)
 ```
