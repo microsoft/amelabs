@@ -42,12 +42,16 @@ npx -y express-generator node-ai-demo --view ejs
 
 cd node-ai-demo
 
+# Update ejs to a secure version before installing (fixes minimatch vulnerability chain)
+echo -e "${CYAN}Updating package.json with secure dependency versions...${NC}"
+npm pkg set dependencies.ejs="^3.1.10"
+
 # Install dependencies locally first to ensure they're available
 echo -e "${CYAN}Installing Node.js dependencies...${NC}"
 npm install
 
-# Fix security vulnerabilities  
-npm audit fix --force --yes
+# Fix any remaining security vulnerabilities
+npm audit fix --force 2>/dev/null || true
 
 # Create a deployment package with node_modules included
 echo -e "${CYAN}Creating deployment package...${NC}"
