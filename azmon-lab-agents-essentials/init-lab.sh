@@ -142,6 +142,15 @@ fi
 prompt_input "Enter the name for the Log Analytics Workspace" WORKSPACE_NAME
 prompt_input "Enter the name for the AKS cluster" AKS_CLUSTER
 prompt_input "Enter the name for the Managed Grafana" MANAGED_GRAFANA
+
+# Validate the name of Managed Grafana (2-23 chars total; a 6-char suffix is appended during deployment)
+GRAFANA_SUFFIX_LEN=6
+while [[ ${#MANAGED_GRAFANA} -lt 2 || $((${#MANAGED_GRAFANA} + GRAFANA_SUFFIX_LEN)) -gt 23 ]]; do
+  echo -e "${YELLOW}⚠️ Managed Grafana name must be between 2 and $((23 - GRAFANA_SUFFIX_LEN)) characters (a ${GRAFANA_SUFFIX_LEN}-character suffix will be appended, keeping the total under 23).${NC}"
+  MANAGED_GRAFANA="managed-gf"
+  prompt_input "Enter the name for the Managed Grafana" MANAGED_GRAFANA
+done
+
 prompt_input "Enter the name for the Azure Monitor Workspace(Managed Prometheus)" PROM_NAME
 
 # Prompt for timezone for auto-shutdown configuration
