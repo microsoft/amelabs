@@ -106,7 +106,6 @@ ALLOWED_REGIONS=(
   "brazilsouth"
   "canadacentral"
   "centralindia"
-  "centralus"
   "eastasia"
   "francecentral"
   "japaneast"
