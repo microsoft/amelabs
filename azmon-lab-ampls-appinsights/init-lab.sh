@@ -87,8 +87,6 @@ prompt_input "Enter the name for the Azure Resource Group" RESOURCE_GROUP
 DEFAULT_REGION="uksouth"
 ALLOWED_REGIONS=(
   "australiaeast"
-  "brazilsouth"
-  "canadacentral"
   "centralindia"
   "centralus"
   "eastasia"
@@ -97,8 +95,6 @@ ALLOWED_REGIONS=(
   "koreacentral"
   "norwayeast"
   "southeastasia"
-  "swedencentral"
-  "uaenorth"
   "uksouth"
   "westus3"
 )
