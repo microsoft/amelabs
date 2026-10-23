@@ -25,7 +25,7 @@ NC='\033[0m' # No Color
 # Clone the repo (skip if already cloned)
 if [ ! -d "amelabs" ]; then
   echo -e "${CYAN}Cloning amelabs repository...${NC}"
-  git clone https://github.com/tiagojfernandes/amelabs.git
+  git clone https://github.com/microsoft/amelabs.git
 fi
 
 

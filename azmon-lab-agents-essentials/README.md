@@ -14,7 +14,7 @@ A comprehensive Azure monitoring lab environment built with Terraform and automa
 4. Run this single command:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/tiagojfernandes/amelabs/refs/heads/main/azmon-lab-agents-essentials/init-lab.sh)
+bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-lab-agents-essentials/init-lab.sh)
 ```
 
 ### What You Get
@@ -89,7 +89,7 @@ Manual deployment requires setting up these tools locally, while **Azure Portal 
 
 ### Deploy
 ```bash
-git clone https://github.com/tiagojfernandes/amelabs.git
+git clone https://github.com/microsoft/amelabs.git
 cd amelabs/azmon-lab-agents-essentials
 chmod +x scripts/deploy-monitoring-viaCLI.sh
 ./scripts/deploy-monitoring-viaCLI.sh
