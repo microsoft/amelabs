@@ -12,7 +12,7 @@ This lab demonstrates Azure Monitor Private Link Scope (AMPLS) implementation wi
 4. Run this single command:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/tiagojfernandes/amelabs/refs/heads/main/azmon-lab-ampls-appinsights/init-lab.sh)
+bash <(curl -s https://raw.githubusercontent.com/microsoft/amelabs/refs/heads/main/azmon-lab-ampls-appinsights/init-lab.sh)
 ```
 
 The deployment takes about 25-30 minutes. You'll be prompted for configuration options during setup.
@@ -108,7 +108,7 @@ All applications use:
 
 ### Deploy
 ```bash
-git clone https://github.com/tiagojfernandes/amelabs.git
+git clone https://github.com/microsoft/amelabs.git
 cd azmon-lab-ampls-appinsights
 ./init-lab.sh
 ```
