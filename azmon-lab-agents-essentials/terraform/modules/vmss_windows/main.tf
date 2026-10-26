@@ -1,13 +1,13 @@
 # vmss_windows/main.tf
 resource "azurerm_windows_virtual_machine_scale_set" "vmss" {
-  name                = var.vmss_name
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  sku                 = "Standard_E2s_v3"
-  instances           = 2
-  admin_username      = var.admin_username
-  admin_password      = var.admin_password
-  computer_name_prefix = "vmsswin"  # Max 9 characters
+  name                 = var.vmss_name
+  resource_group_name  = var.resource_group_name
+  location             = var.location
+  sku                  = "Standard_E2s_v3"
+  instances            = 2
+  admin_username       = var.admin_username
+  admin_password       = var.admin_password
+  computer_name_prefix = "vmsswin" # Max 9 characters
 
   source_image_reference {
     publisher = "MicrosoftWindowsServer"
@@ -26,9 +26,9 @@ resource "azurerm_windows_virtual_machine_scale_set" "vmss" {
     primary = true
 
     ip_configuration {
-      name                                    = "ipconfig"
-      subnet_id                               = var.subnet_id
-      primary                                 = true
+      name                                   = "ipconfig"
+      subnet_id                              = var.subnet_id
+      primary                                = true
       load_balancer_backend_address_pool_ids = [var.backend_pool_id]
     }
   }

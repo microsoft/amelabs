@@ -60,9 +60,9 @@ variable "os_disk_size_gb" {
 
 # Image Configuration
 variable "windows_sku" {
-  description = "Windows Server SKU to deploy (2022-Datacenter, 2019-Datacenter, etc.)"
+  description = "Windows Server SKU to deploy (e.g. 2025-datacenter-azure-edition, 2022-datacenter-azure-edition). Azure Edition images are enrolled in VM Guest Patching, required for patch_mode = AutomaticByPlatform."
   type        = string
-  default     = "2022-Datacenter"
+  default     = "2025-datacenter-azure-edition"
 }
 
 variable "windows_version" {
@@ -98,7 +98,7 @@ variable "enable_automatic_updates" {
 }
 
 variable "patch_mode" {
-  description = "Patch mode for the VM (ImageDefault, AutomaticByPlatform)"
+  description = "Patch mode for the VM (Manual, AutomaticByOS, AutomaticByPlatform). AutomaticByPlatform requires images enrolled in VM Guest Patching (e.g. Windows Server Azure Edition)."
   type        = string
   default     = "AutomaticByPlatform"
 }

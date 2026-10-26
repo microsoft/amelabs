@@ -98,16 +98,20 @@ if dotnet publish -c Release -o ./publish; then
         fi
         
         # Deploy the .NET application
+        # NOTE: 'az webapp deploy' can return non-zero on long uploads even though the
+        # server-side Kudu deployment continues asynchronously and completes successfully.
+        # We tolerate the failure and let the post-deploy verification loop confirm health.
         echo -e "${CYAN}Deploying to Azure App Service...${NC}"
         if az webapp deploy \
             --resource-group $RESOURCE_GROUP \
             --name $DOTNET_WEBAPP_NAME \
             --src-path ../dotnet-app.zip \
-            --type zip; then
+            --type zip \
+            --timeout 1800; then
             echo -e "${GREEN}.NET deployment completed successfully${NC}"
         else
-            echo -e "${RED}Error: .NET deployment failed${NC}"
-            exit 1
+            echo -e "${YELLOW}Warning: 'az webapp deploy' for .NET returned a non-zero exit (likely a client-side timeout).${NC}"
+            echo -e "${YELLOW}The deployment usually continues server-side. Will verify by polling the app URL below.${NC}"
         fi
         
         # Clear any custom startup command - let Azure auto-detect the entry point

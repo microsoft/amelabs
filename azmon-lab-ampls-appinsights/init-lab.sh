@@ -68,7 +68,7 @@ WORKSPACE_NAME="azmon-workspace"
 
 # Register necessary Azure providers
 echo -e "${CYAN}Registering Azure providers...${NC}"
-for ns in Microsoft.Insights Microsoft.OperationalInsights Microsoft.Monitor Microsoft.Security Microsoft.Compute Microsoft.SecurityInsights Microsoft.Dashboard; do
+for ns in Microsoft.Insights Microsoft.OperationalInsights Microsoft.Monitor Microsoft.Security Microsoft.Compute Microsoft.SecurityInsights Microsoft.Dashboard Microsoft.AlertsManagement; do
   register_provider "$ns"
 done
 
@@ -87,17 +87,14 @@ prompt_input "Enter the name for the Azure Resource Group" RESOURCE_GROUP
 DEFAULT_REGION="uksouth"
 ALLOWED_REGIONS=(
   "australiaeast"
-  "brazilsouth"
-  "canadacentral"
   "centralindia"
   "centralus"
   "eastasia"
   "francecentral"
+  "japanwest"
+  "koreacentral"
   "norwayeast"
-  "northeurope"
   "southeastasia"
-  "swedencentral"
-  "uaenorth"
   "uksouth"
   "westus3"
 )
@@ -203,10 +200,20 @@ CUSTOM_PREFIX=${1:-"azmon-${TIMESTAMP}"}
 echo -e "${CYAN}Using prefix: ${CUSTOM_PREFIX}${NC}"
 
 echo -e "${CYAN}Initializing Terraform...${NC}"
-terraform init
+terraform init -upgrade
+
+# Detect Azure subscription ID from current az CLI context (required by azurerm provider v4)
+SUBSCRIPTION_ID=$(az account show --query id -o tsv 2>/dev/null)
+if [ -z "$SUBSCRIPTION_ID" ]; then
+  echo -e "${RED}Could not determine Azure subscription ID. Run 'az login' first.${NC}"
+  exit 1
+fi
+echo -e "${CYAN}Using subscription: ${YELLOW}${SUBSCRIPTION_ID}${NC}"
+export ARM_SUBSCRIPTION_ID="$SUBSCRIPTION_ID"
 
 echo -e "${CYAN}Planning Terraform deployment...${NC}"
 terraform plan \
+  -var="subscription_id=${SUBSCRIPTION_ID}" \
   -var="app_service_prefix=${CUSTOM_PREFIX}" \
   -var="resource_group_name=${RESOURCE_GROUP}" \
   -var="location=${LOCATION}" \
@@ -217,6 +224,7 @@ terraform plan \
 
 echo -e "${CYAN}Applying Terraform configuration...${NC}"
 terraform apply -auto-approve \
+  -var="subscription_id=${SUBSCRIPTION_ID}" \
   -var="app_service_prefix=${CUSTOM_PREFIX}" \
   -var="resource_group_name=${RESOURCE_GROUP}" \
   -var="location=${LOCATION}" \
@@ -256,37 +264,45 @@ sleep 60
 # Navigate back to the project root for the application deployments
 cd ../../
 
+# Helper: run an app deployment script without letting set -e abort the whole pipeline
+# if one app fails (e.g. client-side timeout from 'az webapp deploy' while the server-side
+# deployment still completes asynchronously).
+run_app_deploy() {
+    local label=$1
+    local script_path=$2
+    shift 2
+    if [ ! -f "$script_path" ]; then
+        echo -e "${RED}Error: $script_path not found${NC}"
+        APP_DEPLOY_FAILURES+=("$label (script missing)")
+        return 0
+    fi
+    chmod +x "$script_path"
+    if ! "$script_path" "$@"; then
+        echo -e "${YELLOW}Warning: $label deployment script returned a non-zero exit. Continuing with remaining apps.${NC}"
+        APP_DEPLOY_FAILURES+=("$label")
+    fi
+}
+
+APP_DEPLOY_FAILURES=()
+
 # Deploy Java Application
 echo -e "${CYAN}Starting Java application deployment...${NC}"
-if [ -f "scripts/install-appservice-java.sh" ]; then
-    chmod +x scripts/install-appservice-java.sh
-    ./scripts/install-appservice-java.sh "$DEPLOYED_RG" "$JAVA_WEBAPP_NAME"
-else
-    echo -e "${RED}Error: scripts/install-appservice-java.sh not found${NC}"
-    exit 1
-fi
+run_app_deploy "Java" "scripts/install-appservice-java.sh" "$DEPLOYED_RG" "$JAVA_WEBAPP_NAME"
 
 # Deploy .NET Application
 echo -e "${CYAN}Starting .NET application deployment...${NC}"
-if [ -f "scripts/install-appservice-dotnet.sh" ]; then
-    chmod +x scripts/install-appservice-dotnet.sh
-    ./scripts/install-appservice-dotnet.sh "$DEPLOYED_RG" "$DOTNET_WEBAPP_NAME"
-else
-    echo -e "${RED}Error: scripts/install-appservice-dotnet.sh not found${NC}"
-    exit 1
-fi
+run_app_deploy ".NET" "scripts/install-appservice-dotnet.sh" "$DEPLOYED_RG" "$DOTNET_WEBAPP_NAME"
 
 # Deploy Node.js Application
 echo -e "${CYAN}Starting Node.js application deployment...${NC}"
-if [ -f "scripts/install-appservice-nodejs.sh" ]; then
-    chmod +x scripts/install-appservice-nodejs.sh
-    ./scripts/install-appservice-nodejs.sh "$DEPLOYED_RG" "$NODE_WEBAPP_NAME" "$APP_SERVICE"
-else
-    echo -e "${RED}Error: scripts/install-appservice-nodejs.sh not found${NC}"
-    exit 1
-fi
+run_app_deploy "Node.js" "scripts/install-appservice-nodejs.sh" "$DEPLOYED_RG" "$NODE_WEBAPP_NAME" "$APP_SERVICE"
 
-echo -e "${GREEN}All deployments completed successfully!${NC}"
+if [ ${#APP_DEPLOY_FAILURES[@]} -eq 0 ]; then
+    echo -e "${GREEN}All deployments completed successfully!${NC}"
+else
+    echo -e "${YELLOW}Some app deployment scripts reported a non-zero exit: ${APP_DEPLOY_FAILURES[*]}${NC}"
+    echo -e "${YELLOW}This is often only a client-side timeout; verify the URLs below before treating it as a failure.${NC}"
+fi
 echo -e "${CYAN}Application URLs:${NC}"
 echo -e "  Java:    https://$JAVA_WEBAPP_NAME.azurewebsites.net"
 echo -e "  .NET:    https://$DOTNET_WEBAPP_NAME.azurewebsites.net"

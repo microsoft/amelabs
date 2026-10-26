@@ -6,17 +6,18 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.0"
+      version = "~> 4.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~>3.1"
+      version = "~> 3.6"
     }
   }
 }
 
 provider "azurerm" {
   features {}
+  subscription_id = var.subscription_id
 }
 
 # Resource Group
@@ -31,18 +32,18 @@ resource "azurerm_resource_group" "main" {
 module "network" {
   source = "../../modules/network"
 
-  prefix              = "azmon"  # Fixed prefix for infrastructure
+  prefix              = "azmon" # Fixed prefix for infrastructure
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
 
-  hub_vnet_address_space               = var.hub_vnet_address_space
-  windows_spoke_vnet_address_space     = var.windows_spoke_vnet_address_space
-  ubuntu_spoke_vnet_address_space      = var.ubuntu_spoke_vnet_address_space
-  appservice_spoke_vnet_address_space  = var.appservice_spoke_vnet_address_space
-  
-  hub_ampls_subnet_address_prefixes    = var.hub_ampls_subnet_address_prefixes
-  windows_spoke_vm_subnet_address_prefixes = var.windows_spoke_vm_subnet_address_prefixes
-  ubuntu_spoke_vm_subnet_address_prefixes  = var.ubuntu_spoke_vm_subnet_address_prefixes
+  hub_vnet_address_space              = var.hub_vnet_address_space
+  windows_spoke_vnet_address_space    = var.windows_spoke_vnet_address_space
+  ubuntu_spoke_vnet_address_space     = var.ubuntu_spoke_vnet_address_space
+  appservice_spoke_vnet_address_space = var.appservice_spoke_vnet_address_space
+
+  hub_ampls_subnet_address_prefixes                    = var.hub_ampls_subnet_address_prefixes
+  windows_spoke_vm_subnet_address_prefixes             = var.windows_spoke_vm_subnet_address_prefixes
+  ubuntu_spoke_vm_subnet_address_prefixes              = var.ubuntu_spoke_vm_subnet_address_prefixes
   appservice_spoke_integration_subnet_address_prefixes = var.appservice_spoke_integration_subnet_address_prefixes
 
   tags = var.tags
@@ -52,19 +53,19 @@ module "network" {
 module "monitor" {
   source = "../../modules/monitor"
 
-  prefix                        = "azmon"  # Fixed prefix for infrastructure
-  location                      = var.location
-  resource_group_name           = azurerm_resource_group.main.name
-  log_analytics_workspace_name  = var.log_analytics_workspace_name
+  prefix                       = "azmon" # Fixed prefix for infrastructure
+  location                     = var.location
+  resource_group_name          = azurerm_resource_group.main.name
+  log_analytics_workspace_name = var.log_analytics_workspace_name
 
-  ampls_subnet_id = module.network.hub_ampls_subnet_id
-  hub_vnet_id     = module.network.hub_vnet_id
-  windows_spoke_vnet_id = module.network.windows_spoke_vnet_id
-  ubuntu_spoke_vnet_id  = module.network.ubuntu_spoke_vnet_id
+  ampls_subnet_id          = module.network.hub_ampls_subnet_id
+  hub_vnet_id              = module.network.hub_vnet_id
+  windows_spoke_vnet_id    = module.network.windows_spoke_vnet_id
+  ubuntu_spoke_vnet_id     = module.network.ubuntu_spoke_vnet_id
   appservice_spoke_vnet_id = module.network.appservice_spoke_vnet_id
 
-  log_analytics_sku             = var.log_analytics_sku
-  log_analytics_retention_days  = var.log_analytics_retention_days
+  log_analytics_sku               = var.log_analytics_sku
+  log_analytics_retention_days    = var.log_analytics_retention_days
   perf_counter_sampling_frequency = var.perf_counter_sampling_frequency
 
   depends_on = [
@@ -78,15 +79,15 @@ module "monitor" {
 module "compute" {
   source = "../../modules/compute"
 
-  prefix              = "azmon"  # Fixed prefix for infrastructure
+  prefix              = "azmon" # Fixed prefix for infrastructure
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
 
-  windows_vm_subnet_id    = module.network.windows_spoke_vm_subnet_id
-  ubuntu_vm_subnet_id     = module.network.ubuntu_spoke_vm_subnet_id
-  data_collection_rule_id = module.monitor.data_collection_rule_id
+  windows_vm_subnet_id           = module.network.windows_spoke_vm_subnet_id
+  ubuntu_vm_subnet_id            = module.network.ubuntu_spoke_vm_subnet_id
+  data_collection_rule_id        = module.monitor.data_collection_rule_id
   ubuntu_data_collection_rule_id = module.monitor.ubuntu_data_collection_rule_id
-  data_collection_endpoint_id = module.monitor.data_collection_endpoint_id
+  data_collection_endpoint_id    = module.monitor.data_collection_endpoint_id
 
   # Application Insights configuration
   application_insights_connection_string = module.monitor.connection_string
@@ -97,11 +98,11 @@ module "compute" {
   enable_public_ips = var.enable_public_ips
 
   # Auto-shutdown configuration
-  enable_autoshutdown                    = var.enable_autoshutdown
-  autoshutdown_time                     = var.autoshutdown_time
-  autoshutdown_timezone                 = var.autoshutdown_timezone
-  autoshutdown_notification_enabled     = var.autoshutdown_notification_enabled
-  autoshutdown_notification_email       = var.autoshutdown_notification_email
+  enable_autoshutdown               = var.enable_autoshutdown
+  autoshutdown_time                 = var.autoshutdown_time
+  autoshutdown_timezone             = var.autoshutdown_timezone
+  autoshutdown_notification_enabled = var.autoshutdown_notification_enabled
+  autoshutdown_notification_email   = var.autoshutdown_notification_email
 
   depends_on = [
     module.network,
@@ -113,13 +114,13 @@ module "compute" {
 
 #App Service Module
 module "appservice" {
- source = "../../modules/appservice"
+  source = "../../modules/appservice"
 
-  prefix              = var.app_service_prefix  # Custom prefix for App Services only
+  prefix              = var.app_service_prefix # Custom prefix for App Services only
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
 
-  plan_sku            = "B2"  # Basic B2: 2 cores, 3.5GB RAM, dev/test pricing
+  plan_sku              = "P0v3" # Premium v3 P0v3: 1 vCPU, 4GB RAM
   integration_subnet_id = module.network.appservice_integration_subnet_id
 
   log_analytics_workspace_id    = module.monitor.log_analytics_workspace_id

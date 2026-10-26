@@ -7,7 +7,7 @@ resource "azurerm_log_analytics_workspace" "main" {
   resource_group_name        = var.resource_group_name
   sku                        = var.log_analytics_sku
   retention_in_days          = var.log_analytics_retention_days
-  internet_ingestion_enabled = false  # This enforces private link only
+  internet_ingestion_enabled = false # This enforces private link only
   internet_query_enabled     = true
 
   tags = var.tags
@@ -20,7 +20,7 @@ resource "azurerm_application_insights" "main" {
   resource_group_name = var.resource_group_name
   workspace_id        = azurerm_log_analytics_workspace.main.id
   application_type    = "web"
-  
+
   # Connect to the same Log Analytics Workspace
   sampling_percentage = 100
 
@@ -100,7 +100,7 @@ resource "azurerm_private_endpoint" "ampls" {
   }
 
   private_dns_zone_group {
-    name                 = "default"
+    name = "default"
     private_dns_zone_ids = [
       azurerm_private_dns_zone.monitor.id,
       azurerm_private_dns_zone.oms.id,
@@ -151,11 +151,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "monitor_hub" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.monitor.name
   virtual_network_id    = var.hub_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.monitor
   ]
-  
+
   tags = var.tags
 }
 
@@ -164,11 +164,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "oms_hub" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.oms.name
   virtual_network_id    = var.hub_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.oms
   ]
-  
+
   tags = var.tags
 }
 
@@ -177,11 +177,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ods_hub" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.ods.name
   virtual_network_id    = var.hub_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.ods
   ]
-  
+
   tags = var.tags
 }
 
@@ -190,11 +190,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc_hub" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.agentsvc.name
   virtual_network_id    = var.hub_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.agentsvc
   ]
-  
+
   tags = var.tags
 }
 
@@ -203,11 +203,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "blob_hub" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.blob.name
   virtual_network_id    = var.hub_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.blob
   ]
-  
+
   tags = var.tags
 }
 
@@ -217,11 +217,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "monitor_windows_spoke"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.monitor.name
   virtual_network_id    = var.windows_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.monitor
   ]
-  
+
   tags = var.tags
 }
 
@@ -230,11 +230,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "oms_windows_spoke" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.oms.name
   virtual_network_id    = var.windows_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.oms
   ]
-  
+
   tags = var.tags
 }
 
@@ -243,11 +243,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ods_windows_spoke" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.ods.name
   virtual_network_id    = var.windows_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.ods
   ]
-  
+
   tags = var.tags
 }
 
@@ -256,24 +256,24 @@ resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc_windows_spoke
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.agentsvc.name
   virtual_network_id    = var.windows_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.agentsvc
   ]
-  
+
   tags = var.tags
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "blob_windows_spoke" {
   name                  = "windows-spoke-link"
-  resource_group_name   = var.resource_group_name  
+  resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.blob.name
   virtual_network_id    = var.windows_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.blob
   ]
-  
+
   tags = var.tags
 }
 
@@ -283,11 +283,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "monitor_ubuntu_spoke" 
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.monitor.name
   virtual_network_id    = var.ubuntu_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.monitor
   ]
-  
+
   tags = var.tags
 }
 
@@ -296,11 +296,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "oms_ubuntu_spoke" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.oms.name
   virtual_network_id    = var.ubuntu_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.oms
   ]
-  
+
   tags = var.tags
 }
 
@@ -309,11 +309,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ods_ubuntu_spoke" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.ods.name
   virtual_network_id    = var.ubuntu_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.ods
   ]
-  
+
   tags = var.tags
 }
 
@@ -322,11 +322,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc_ubuntu_spoke"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.agentsvc.name
   virtual_network_id    = var.ubuntu_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.agentsvc
   ]
-  
+
   tags = var.tags
 }
 
@@ -335,11 +335,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "blob_ubuntu_spoke" {
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.blob.name
   virtual_network_id    = var.ubuntu_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.blob
   ]
-  
+
   tags = var.tags
 }
 
@@ -349,11 +349,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "monitor_appservice_spo
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.monitor.name
   virtual_network_id    = var.appservice_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.monitor
   ]
-  
+
   tags = var.tags
 }
 
@@ -362,11 +362,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "oms_appservice_spoke" 
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.oms.name
   virtual_network_id    = var.appservice_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.oms
   ]
-  
+
   tags = var.tags
 }
 
@@ -375,11 +375,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ods_appservice_spoke" 
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.ods.name
   virtual_network_id    = var.appservice_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.ods
   ]
-  
+
   tags = var.tags
 }
 
@@ -388,11 +388,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "agentsvc_appservice_sp
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.agentsvc.name
   virtual_network_id    = var.appservice_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.agentsvc
   ]
-  
+
   tags = var.tags
 }
 
@@ -401,11 +401,11 @@ resource "azurerm_private_dns_zone_virtual_network_link" "blob_appservice_spoke"
   resource_group_name   = var.resource_group_name
   private_dns_zone_name = azurerm_private_dns_zone.blob.name
   virtual_network_id    = var.appservice_spoke_vnet_id
-  
+
   depends_on = [
     azurerm_private_dns_zone.blob
   ]
-  
+
   tags = var.tags
 }
 

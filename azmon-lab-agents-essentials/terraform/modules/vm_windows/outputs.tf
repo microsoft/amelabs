@@ -35,8 +35,8 @@ output "os_disk" {
   description = "The OS disk configuration of the Windows Virtual Machine"
   value = {
     name                 = azurerm_windows_virtual_machine.vm.os_disk[0].name
-    size_gb             = azurerm_windows_virtual_machine.vm.os_disk[0].disk_size_gb
-    caching             = azurerm_windows_virtual_machine.vm.os_disk[0].caching
+    size_gb              = azurerm_windows_virtual_machine.vm.os_disk[0].disk_size_gb
+    caching              = azurerm_windows_virtual_machine.vm.os_disk[0].caching
     storage_account_type = azurerm_windows_virtual_machine.vm.os_disk[0].storage_account_type
   }
 }

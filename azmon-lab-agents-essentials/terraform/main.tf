@@ -1,14 +1,14 @@
 terraform {
-  required_version = ">= 1.3.0"
+  required_version = ">= 1.9.0"
 
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = "~> 4.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.0"
+      version = "~> 3.6"
     }
   }
 }
@@ -54,7 +54,7 @@ module "dcr_vmss" {
   location            = var.location
   workspace_id        = module.log_analytics.workspace_id
   target_resource_id  = module.vmss_windows.vmss_id
-  
+
   depends_on = [module.vmss_windows]
 }
 
@@ -281,7 +281,7 @@ resource "azurerm_network_security_group" "redhat_vm_nsg" {
   name                = "${var.redhat_vm_name}-nsg"
   location            = var.location
   resource_group_name = module.resource_group.name
- 
+
   security_rule {
     name                       = "allow_http"
     priority                   = 1100
@@ -314,7 +314,7 @@ resource "azurerm_network_security_group" "redhat_vm_nsg" {
     protocol                   = "Udp"
     source_port_range          = "*"
     destination_port_range     = "514"
-    source_address_prefixes    = ["10.0.2.0/24"]  # Internal subnet only
+    source_address_prefixes    = ["10.0.2.0/24"] # Internal subnet only
     destination_address_prefix = "*"
   }
 
@@ -326,7 +326,7 @@ resource "azurerm_network_security_group" "redhat_vm_nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "514"
-    source_address_prefixes    = ["10.0.2.0/24"]  # Internal subnet only
+    source_address_prefixes    = ["10.0.2.0/24"] # Internal subnet only
     destination_address_prefix = "*"
   }
 
@@ -480,15 +480,15 @@ module "automation_runbook" {
   depends_on = [module.vmss_windows]
 }
 
-# VM Insights Module - Enable VM Insights with Dependency Agent for all VMs
+# VM Insights Module - Create the VM Insights DCR and associate it with each VM.
+# AMA is installed by each VM module; Dependency Agent has been removed (deprecated).
 module "vm_insights" {
   source = "./modules/vm_insights"
 
   resource_group_name = module.resource_group.name
-  location           = var.location
-  workspace_name     = var.workspace_name
-  workspace_id       = module.log_analytics.workspace_id
-  subscription_id    = var.subscription_id
+  location            = var.location
+  workspace_name      = var.workspace_name
+  workspace_id        = module.log_analytics.workspace_id
 
   # Windows VM configuration
   windows_vm_id   = module.vm_windows.vm_id

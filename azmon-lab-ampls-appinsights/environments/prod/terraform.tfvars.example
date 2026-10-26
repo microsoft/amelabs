@@ -2,6 +2,7 @@
 # Copy this file to terraform.tfvars and customize as needed
 
 # Basic Configuration
+subscription_id     = "00000000-0000-0000-0000-000000000000"  # Required by azurerm provider v4
 prefix              = "azmon"
 resource_group_name = "rg-azmon-ampls-lab"
 location           = "North Europe"

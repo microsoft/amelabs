@@ -37,17 +37,17 @@ output "redhat_vm_name" {
   value       = module.vm_redhat.vm_name
 }
 
-output  "aks_name" {
+output "aks_name" {
   description = "AKS Cluster name"
   value       = var.aks_name
 }
 
-output  "grafana_name" {
+output "grafana_name" {
   description = "Managed Grafana name"
   value       = var.grafana_name
 }
 
-output  "prom_name" {
+output "prom_name" {
   description = "Managed Prometheus name"
   value       = var.prom_name
 }
@@ -89,13 +89,8 @@ output "vm_insights_data_collection_rule_name" {
   value       = module.vm_insights.data_collection_rule_name
 }
 
-output "vm_insights_user_assigned_identity_id" {
-  description = "Resource ID of the User Assigned Managed Identity for VM Insights"
-  value       = module.vm_insights.user_assigned_identity_id
-}
-
 output "vm_insights_installation_status" {
-  description = "Status of VM Insights installation for all VMs (DCR associations managed by Install-VMInsights.ps1)"
+  description = "Status of VM Insights DCR association for each VM"
   value       = module.vm_insights.vm_insights_installation_status
 }
 

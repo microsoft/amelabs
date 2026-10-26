@@ -94,13 +94,20 @@ else
         zip -r ../app_with_agent.zip .
         cd ..
         
-        az webapp deploy \
-          --resource-group $RESOURCE_GROUP \
-          --name $JAVA_WEBAPP_NAME \
-          --src-path app_with_agent.zip \
-          --type zip
+        # NOTE: az webapp deploy can return a non-zero exit on long uploads even though
+        # the server-side Kudu deployment continues asynchronously and completes successfully.
+        # We therefore tolerate failures here so the rest of the lab pipeline can continue.
+        if ! az webapp deploy \
+              --resource-group $RESOURCE_GROUP \
+              --name $JAVA_WEBAPP_NAME \
+              --src-path app_with_agent.zip \
+              --type zip \
+              --timeout 1800; then
+            echo -e "${YELLOW}Warning: 'az webapp deploy' for Java returned a non-zero exit (likely a client-side timeout).${NC}"
+            echo -e "${YELLOW}The deployment usually continues server-side. Check the app at https://$JAVA_WEBAPP_NAME.azurewebsites.net after a couple of minutes.${NC}"
+        fi
           
-        echo -e "${GREEN}Java application deployed to $JAVA_WEBAPP_NAME${NC}"
+        echo -e "${GREEN}Java application deployment submitted to $JAVA_WEBAPP_NAME${NC}"
         
         # Cleanup
         rm -rf deploy_temp

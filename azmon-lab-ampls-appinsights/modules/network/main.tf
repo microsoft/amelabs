@@ -103,7 +103,7 @@ resource "azurerm_virtual_network_peering" "hub_to_windows_spoke" {
   resource_group_name       = var.resource_group_name
   virtual_network_name      = azurerm_virtual_network.hub.name
   remote_virtual_network_id = azurerm_virtual_network.windows_spoke.id
-  
+
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -116,7 +116,7 @@ resource "azurerm_virtual_network_peering" "windows_spoke_to_hub" {
   resource_group_name       = var.resource_group_name
   virtual_network_name      = azurerm_virtual_network.windows_spoke.name
   remote_virtual_network_id = azurerm_virtual_network.hub.id
-  
+
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -129,7 +129,7 @@ resource "azurerm_virtual_network_peering" "hub_to_ubuntu_spoke" {
   resource_group_name       = var.resource_group_name
   virtual_network_name      = azurerm_virtual_network.hub.name
   remote_virtual_network_id = azurerm_virtual_network.ubuntu_spoke.id
-  
+
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -142,7 +142,7 @@ resource "azurerm_virtual_network_peering" "ubuntu_spoke_to_hub" {
   resource_group_name       = var.resource_group_name
   virtual_network_name      = azurerm_virtual_network.ubuntu_spoke.name
   remote_virtual_network_id = azurerm_virtual_network.hub.id
-  
+
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -155,7 +155,7 @@ resource "azurerm_virtual_network_peering" "hub_to_appservice_spoke" {
   resource_group_name       = var.resource_group_name
   virtual_network_name      = azurerm_virtual_network.hub.name
   remote_virtual_network_id = azurerm_virtual_network.appservice_spoke.id
-  
+
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -168,7 +168,7 @@ resource "azurerm_virtual_network_peering" "appservice_spoke_to_hub" {
   resource_group_name       = var.resource_group_name
   virtual_network_name      = azurerm_virtual_network.appservice_spoke.name
   remote_virtual_network_id = azurerm_virtual_network.hub.id
-  
+
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -227,7 +227,7 @@ resource "azurerm_network_security_group" "vm_nsg" {
 resource "azurerm_subnet_network_security_group_association" "windows_vm_subnet_nsg" {
   subnet_id                 = azurerm_subnet.windows_spoke_vms.id
   network_security_group_id = azurerm_network_security_group.vm_nsg.id
-  
+
   depends_on = [
     azurerm_subnet.windows_spoke_vms,
     azurerm_network_security_group.vm_nsg
@@ -238,7 +238,7 @@ resource "azurerm_subnet_network_security_group_association" "windows_vm_subnet_
 resource "azurerm_subnet_network_security_group_association" "ubuntu_vm_subnet_nsg" {
   subnet_id                 = azurerm_subnet.ubuntu_spoke_vms.id
   network_security_group_id = azurerm_network_security_group.vm_nsg.id
-  
+
   depends_on = [
     azurerm_subnet.ubuntu_spoke_vms,
     azurerm_network_security_group.vm_nsg

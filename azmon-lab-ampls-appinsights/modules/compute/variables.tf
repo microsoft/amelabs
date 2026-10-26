@@ -60,7 +60,7 @@ variable "vm_size" {
 variable "os_disk_storage_account_type" {
   description = "Storage account type for OS disks"
   type        = string
-  default     = "Standard_LRS"  # Use Standard for B1s VMs
+  default     = "Standard_LRS" # Use Standard for B1s VMs
 }
 
 variable "enable_public_ips" {
@@ -70,7 +70,7 @@ variable "enable_public_ips" {
 }
 
 variable "windows_vm_image" {
-  description = "Windows VM image configuration"
+  description = "Windows VM image configuration. Defaults to 2025 Datacenter Azure Edition (enrolled in VM Guest Patching)."
   type = object({
     publisher = string
     offer     = string
@@ -80,7 +80,7 @@ variable "windows_vm_image" {
   default = {
     publisher = "MicrosoftWindowsServer"
     offer     = "WindowsServer"
-    sku       = "2022-Datacenter"
+    sku       = "2025-datacenter-azure-edition"
     version   = "latest"
   }
 }

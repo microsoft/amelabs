@@ -72,7 +72,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "3389"
-    source_address_prefix      = "*"  # Allow RDP from any source to load balancer
+    source_address_prefix      = "*" # Allow RDP from any source to load balancer
     destination_address_prefix = "*"
   }
 

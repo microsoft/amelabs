@@ -18,18 +18,6 @@ variable "workspace_id" {
   type        = string
 }
 
-variable "workspace_key" {
-  description = "Primary key of the Log Analytics workspace (not needed for modern approach)"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "subscription_id" {
-  description = "Azure subscription ID"
-  type        = string
-}
-
 variable "windows_vm_id" {
   description = "Resource ID of the Windows VM"
   type        = string
@@ -37,7 +25,7 @@ variable "windows_vm_id" {
 }
 
 variable "windows_vm_name" {
-  description = "Name of the Windows VM"
+  description = "Name of the Windows VM (used for DCRA naming)"
   type        = string
   default     = null
 }
@@ -49,7 +37,7 @@ variable "redhat_vm_id" {
 }
 
 variable "redhat_vm_name" {
-  description = "Name of the RedHat VM"
+  description = "Name of the RedHat VM (used for DCRA naming)"
   type        = string
   default     = null
 }
@@ -61,7 +49,7 @@ variable "ubuntu_vm_id" {
 }
 
 variable "ubuntu_vm_name" {
-  description = "Name of the Ubuntu VM"
+  description = "Name of the Ubuntu VM (used for DCRA naming)"
   type        = string
   default     = null
 }

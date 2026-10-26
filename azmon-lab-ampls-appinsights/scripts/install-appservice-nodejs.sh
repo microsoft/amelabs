@@ -58,12 +58,19 @@ echo -e "${CYAN}Creating deployment package...${NC}"
 zip -r ../node-app.zip . -x "*.git*" "*.vscode*" "README.md"
 
 # Deploy using az webapp deploy (which preserves node_modules)
+# NOTE: 'az webapp deploy' can return non-zero on long uploads even though the
+# server-side Kudu deployment continues asynchronously and completes successfully.
+# We tolerate the failure and let the post-deploy verification loop confirm health.
 echo -e "${CYAN}Deploying to Azure App Service...${NC}"
-az webapp deploy \
+if ! az webapp deploy \
   --resource-group $RESOURCE_GROUP \
   --name $NODE_WEBAPP_NAME \
   --src-path ../node-app.zip \
-  --type zip
+  --type zip \
+  --timeout 1800; then
+    echo -e "${YELLOW}Warning: 'az webapp deploy' for Node.js returned a non-zero exit (likely a client-side timeout).${NC}"
+    echo -e "${YELLOW}The deployment usually continues server-side. Will verify by polling the app URL below.${NC}"
+fi
 
 # Wait a moment for deployment to process
 echo -e "${YELLOW}Waiting for Node.js deployment to complete...${NC}"

@@ -12,7 +12,7 @@ variable "resource_group_name" {
 
 variable "plan_sku" {
   type    = string
-  default = "S1"
+  default = "P0v3"
 }
 
 # Names (optional)
@@ -60,7 +60,7 @@ variable "java_version" {
 
 variable "java_server" {
   type    = string
-  default = "JAVA"   # Java SE
+  default = "JAVA" # Java SE
 }
 
 variable "java_server_version" {
@@ -77,13 +77,13 @@ variable "java_app_command_line" {
 # Node.js configuration
 variable "node_version" {
   type    = string
-  default = "20-lts"
+  default = "22-lts"
 }
 
 variable "node_app_command_line" {
   type        = string
-  default     = "npm start"
-  description = "Custom startup command for the Node.js Web App"
+  default     = ""
+  description = "Custom startup command for the Node.js Web App. Leave empty so Oryx auto-detects and runs 'npm start' from /home/site/wwwroot. Setting an explicit command (e.g. 'npm start') causes it to run from '/', producing ENOENT for /package.json."
 }
 
 

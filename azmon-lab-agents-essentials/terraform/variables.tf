@@ -53,7 +53,7 @@ variable "subnet_name" {
 variable "vmss_name" {
   description = "Name of the Virtual Machine Scale Set"
   type        = string
-  default     = "vmss-win"  # Short name to avoid any naming issues
+  default     = "vmss-win" # Short name to avoid any naming issues
 }
 
 

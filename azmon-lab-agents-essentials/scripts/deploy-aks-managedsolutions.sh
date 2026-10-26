@@ -91,7 +91,7 @@ echo -e "${CYAN}Log Analytics workspace ID: ${YELLOW}$workspaceId${NC}"
 #
 echo -e "${CYAN}Creating AKS cluster (this may take several minutes)...${NC}"
 # The second command creates an AKS cluster with monitoring enabled, linking it to the Log Analytics workspace using the retrieved ID. This setup integrates Azure Monitor for containers with the AKS cluster.
-az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER --node-count 2 --enable-addons monitoring --generate-ssh-keys --workspace-resource-id $workspaceId
+az aks create -g $RESOURCE_GROUP -n $AKS_CLUSTER --node-count 2 --node-vm-size Standard_D2s_v5 --enable-addons monitoring --generate-ssh-keys --workspace-resource-id $workspaceId
 echo -e "${GREEN}✓ AKS cluster created successfully${NC}"
 #
 echo ""

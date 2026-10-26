@@ -4,6 +4,11 @@ variable "prefix" {
   default     = "azmon"
 }
 
+variable "subscription_id" {
+  description = "Azure subscription ID where resources will be deployed (required by azurerm provider v4)"
+  type        = string
+}
+
 variable "app_service_prefix" {
   description = "Prefix for App Service names (to avoid conflicts)"
   type        = string
@@ -43,7 +48,7 @@ variable "admin_password" {
 variable "vm_size" {
   description = "Size of the virtual machines"
   type        = string
-  default     = "Standard_B2s"  # Supports Gen2, 2 vCPUs, 4GB RAM
+  default     = "Standard_B2s" # Supports Gen2, 2 vCPUs, 4GB RAM
 }
 
 variable "enable_public_ips" {

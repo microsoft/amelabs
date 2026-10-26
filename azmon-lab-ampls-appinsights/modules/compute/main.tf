@@ -95,6 +95,9 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   # Install Azure Monitor Agent
   provision_vm_agent = true
 
+  # Required for hotpatch-enabled images such as 2025-datacenter-azure-edition
+  patch_mode = "AutomaticByPlatform"
+
   tags = var.tags
 }
 
@@ -134,12 +137,13 @@ resource "azurerm_linux_virtual_machine" "ubuntu_vm" {
 
 # Azure Monitor Agent Extension for Windows VM
 resource "azurerm_virtual_machine_extension" "azure_monitor_agent_windows" {
-  name                 = "AzureMonitorWindowsAgent"
-  virtual_machine_id   = azurerm_windows_virtual_machine.windows_vm.id
-  publisher            = "Microsoft.Azure.Monitor"
-  type                 = "AzureMonitorWindowsAgent"
-  type_handler_version = "1.0"
+  name                       = "AzureMonitorWindowsAgent"
+  virtual_machine_id         = azurerm_windows_virtual_machine.windows_vm.id
+  publisher                  = "Microsoft.Azure.Monitor"
+  type                       = "AzureMonitorWindowsAgent"
+  type_handler_version       = "1.10"
   auto_upgrade_minor_version = true
+  automatic_upgrade_enabled  = true
 
   depends_on = [
     azurerm_windows_virtual_machine.windows_vm
@@ -172,12 +176,13 @@ resource "azurerm_virtual_machine_extension" "windows_vm_custom_script" {
 
 # Azure Monitor Agent Extension for Ubuntu VM
 resource "azurerm_virtual_machine_extension" "azure_monitor_agent_linux" {
-  name                 = "AzureMonitorLinuxAgent"
-  virtual_machine_id   = azurerm_linux_virtual_machine.ubuntu_vm.id
-  publisher            = "Microsoft.Azure.Monitor"
-  type                 = "AzureMonitorLinuxAgent"
-  type_handler_version = "1.0"
+  name                       = "AzureMonitorLinuxAgent"
+  virtual_machine_id         = azurerm_linux_virtual_machine.ubuntu_vm.id
+  publisher                  = "Microsoft.Azure.Monitor"
+  type                       = "AzureMonitorLinuxAgent"
+  type_handler_version       = "1.29"
   auto_upgrade_minor_version = true
+  automatic_upgrade_enabled  = true
 
   depends_on = [
     azurerm_linux_virtual_machine.ubuntu_vm
@@ -224,7 +229,7 @@ resource "azurerm_monitor_data_collection_rule_association" "windows_vm" {
   name                    = "${var.prefix}-dcra-windows"
   target_resource_id      = azurerm_windows_virtual_machine.windows_vm.id
   data_collection_rule_id = var.data_collection_rule_id
-  
+
   depends_on = [
     azurerm_windows_virtual_machine.windows_vm,
     azurerm_virtual_machine_extension.azure_monitor_agent_windows
@@ -236,7 +241,7 @@ resource "azurerm_monitor_data_collection_rule_association" "ubuntu_vm" {
   name                    = "${var.prefix}-dcra-ubuntu"
   target_resource_id      = azurerm_linux_virtual_machine.ubuntu_vm.id
   data_collection_rule_id = var.ubuntu_data_collection_rule_id
-  
+
   depends_on = [
     azurerm_linux_virtual_machine.ubuntu_vm,
     azurerm_virtual_machine_extension.azure_monitor_agent_linux
@@ -248,7 +253,7 @@ resource "azurerm_monitor_data_collection_rule_association" "windows_vm_dce" {
   name                        = "configurationAccessEndpoint"
   target_resource_id          = azurerm_windows_virtual_machine.windows_vm.id
   data_collection_endpoint_id = var.data_collection_endpoint_id
-  
+
   depends_on = [
     azurerm_windows_virtual_machine.windows_vm,
     azurerm_virtual_machine_extension.azure_monitor_agent_windows
@@ -260,7 +265,7 @@ resource "azurerm_monitor_data_collection_rule_association" "ubuntu_vm_dce" {
   name                        = "configurationAccessEndpoint"
   target_resource_id          = azurerm_linux_virtual_machine.ubuntu_vm.id
   data_collection_endpoint_id = var.data_collection_endpoint_id
-  
+
   depends_on = [
     azurerm_linux_virtual_machine.ubuntu_vm,
     azurerm_virtual_machine_extension.azure_monitor_agent_linux

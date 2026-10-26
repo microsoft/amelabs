@@ -1,9 +1,12 @@
-# Data Collection Rule for VM Insights with Processes and Dependencies
+# Data Collection Rule for VM Insights (performance counters only)
+# Note: Dependency Agent has been deprecated and is no longer used by this lab.
+# AMA is installed by each VM module; this module only creates the DCR and the
+# DCR-to-VM associations required for VM Insights.
 resource "azurerm_monitor_data_collection_rule" "vm_insights" {
   name                = "MSVMI-${var.workspace_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
-  description         = "Data Collection Rule for VM Insights with dependency agent"
+  description         = "Data Collection Rule for VM Insights (performance counters)"
 
   destinations {
     log_analytics {
@@ -13,7 +16,7 @@ resource "azurerm_monitor_data_collection_rule" "vm_insights" {
   }
 
   data_flow {
-    streams      = ["Microsoft-InsightsMetrics", "Microsoft-ServiceMap"]
+    streams      = ["Microsoft-InsightsMetrics"]
     destinations = ["VMInsightsPerf-Logs-Dest"]
   }
 
@@ -26,96 +29,34 @@ resource "azurerm_monitor_data_collection_rule" "vm_insights" {
         "\\VmInsights\\DetailedMetrics"
       ]
     }
-
-    # Extension for dependency mapping
-    extension {
-      streams        = ["Microsoft-ServiceMap"]
-      extension_name = "DependencyAgent"
-      name           = "DependencyAgentDataSource"
-    }
   }
 
   tags = var.tags
 }
 
-# User Assigned Managed Identity for VM Insights (required by Install-VMInsights.ps1)
-resource "azurerm_user_assigned_identity" "vm_insights" {
-  name                = "${var.workspace_name}-vm-insights-identity"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-
-  tags = var.tags
+# DCR Association - Windows VM
+resource "azurerm_monitor_data_collection_rule_association" "windows_vm" {
+  count                   = var.windows_vm_name != null && var.windows_vm_name != "" ? 1 : 0
+  name                    = "MSVMI-${var.windows_vm_name}-dcra"
+  target_resource_id      = var.windows_vm_id
+  data_collection_rule_id = azurerm_monitor_data_collection_rule.vm_insights.id
+  description             = "VM Insights DCR association for Windows VM"
 }
 
-# Role assignment for the managed identity
-resource "azurerm_role_assignment" "monitoring_metrics_publisher" {
-  scope                = var.workspace_id
-  role_definition_name = "Monitoring Metrics Publisher"
-  principal_id         = azurerm_user_assigned_identity.vm_insights.principal_id
+# DCR Association - RedHat VM
+resource "azurerm_monitor_data_collection_rule_association" "redhat_vm" {
+  count                   = var.redhat_vm_name != null && var.redhat_vm_name != "" ? 1 : 0
+  name                    = "MSVMI-${var.redhat_vm_name}-dcra"
+  target_resource_id      = var.redhat_vm_id
+  data_collection_rule_id = azurerm_monitor_data_collection_rule.vm_insights.id
+  description             = "VM Insights DCR association for RedHat VM"
 }
 
-# Use local-exec provisioner to run the official Install-VMInsights.ps1 script for Windows VM
-resource "null_resource" "windows_vm_insights" {
-  count = var.windows_vm_name != null && var.windows_vm_name != "" ? 1 : 0
-
-  provisioner "local-exec" {
-    command = <<-EOT
-      pwsh -NoProfile -ExecutionPolicy Bypass -File "${path.module}/scripts/Install-VMInsights.ps1" `
-        -SubscriptionId ${var.subscription_id} `
-        -ResourceGroup ${var.resource_group_name} `
-        -Name ${var.windows_vm_name} `
-        -DcrResourceId ${azurerm_monitor_data_collection_rule.vm_insights.id} `
-        -UserAssignedManagedIdentityResourceGroup ${var.resource_group_name} `
-        -UserAssignedManagedIdentityName ${azurerm_user_assigned_identity.vm_insights.name} `
-        -ProcessAndDependencies `
-        -Approve
-    EOT
-
-    interpreter = ["pwsh", "-Command"]
-  }
-
-  depends_on = [
-    azurerm_monitor_data_collection_rule.vm_insights,
-    azurerm_user_assigned_identity.vm_insights,
-    azurerm_role_assignment.monitoring_metrics_publisher
-  ]
-
-  triggers = {
-    dcr_id = azurerm_monitor_data_collection_rule.vm_insights.id
-    uami_id = azurerm_user_assigned_identity.vm_insights.id
-    script_hash = filesha256("${path.module}/scripts/Install-VMInsights.ps1")
-  }
-}
-
-# Use local-exec provisioner to run the official Install-VMInsights.ps1 script for RedHat VM
-resource "null_resource" "redhat_vm_insights" {
-  count = var.redhat_vm_name != null && var.redhat_vm_name != "" ? 1 : 0
-
-  provisioner "local-exec" {
-    command = <<-EOT
-      pwsh -NoProfile -ExecutionPolicy Bypass -File "${path.module}/scripts/Install-VMInsights.ps1" `
-        -SubscriptionId ${var.subscription_id} `
-        -ResourceGroup ${var.resource_group_name} `
-        -Name ${var.redhat_vm_name} `
-        -DcrResourceId ${azurerm_monitor_data_collection_rule.vm_insights.id} `
-        -UserAssignedManagedIdentityResourceGroup ${var.resource_group_name} `
-        -UserAssignedManagedIdentityName ${azurerm_user_assigned_identity.vm_insights.name} `
-        -ProcessAndDependencies `
-        -Approve
-    EOT
-
-    interpreter = ["pwsh", "-Command"]
-  }
-
-  depends_on = [
-    azurerm_monitor_data_collection_rule.vm_insights,
-    azurerm_user_assigned_identity.vm_insights,
-    azurerm_role_assignment.monitoring_metrics_publisher
-  ]
-
-  triggers = {
-    dcr_id = azurerm_monitor_data_collection_rule.vm_insights.id
-    uami_id = azurerm_user_assigned_identity.vm_insights.id
-    script_hash = filesha256("${path.module}/scripts/Install-VMInsights.ps1")
-  }
+# DCR Association - Ubuntu VM
+resource "azurerm_monitor_data_collection_rule_association" "ubuntu_vm" {
+  count                   = var.ubuntu_vm_name != null && var.ubuntu_vm_name != "" ? 1 : 0
+  name                    = "MSVMI-${var.ubuntu_vm_name}-dcra"
+  target_resource_id      = var.ubuntu_vm_id
+  data_collection_rule_id = azurerm_monitor_data_collection_rule.vm_insights.id
+  description             = "VM Insights DCR association for Ubuntu VM"
 }

@@ -5,7 +5,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   size                            = var.vm_size
   admin_username                  = var.admin_username
   admin_password                  = var.admin_password
-  disable_password_authentication = false  # Allow password authentication
+  disable_password_authentication = false # Allow password authentication
   computer_name                   = var.computer_name != null ? var.computer_name : var.vm_name
   custom_data                     = var.custom_data
   network_interface_ids           = [var.nic_id]
@@ -16,14 +16,14 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   # Patch management
-  patch_mode                  = var.patch_mode
+  patch_mode                 = var.patch_mode
   provision_vm_agent         = true
   allow_extension_operations = true
 
   os_disk {
-    caching                = var.os_disk_caching
-    storage_account_type   = var.os_disk_storage_account_type
-    disk_size_gb          = var.os_disk_size_gb
+    caching              = var.os_disk_caching
+    storage_account_type = var.os_disk_storage_account_type
+    disk_size_gb         = var.os_disk_size_gb
   }
 
   source_image_reference {
